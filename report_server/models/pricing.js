@@ -1,28 +1,44 @@
 /* jshint indent: 1 */
 
-module.exports = function(sequelize, DataTypes) {
-	const kiosk_user= sequelize.define('kiosk_user', {
+module.exports = function (sequelize, DataTypes) {
+	const pricing = sequelize.define('pricing', {
 		id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
 			primaryKey: true,
 			autoIncrement: true
 		},
-		kiosk_id: {
+		sales_channel_id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
 			references: {
-				model: 'kiosk',
+				model: 'sales_channel',
 				key: 'id'
 			}
 		},
-		user_id: {
+		product_id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
 			references: {
-				model: 'user',
+				model: 'product',
 				key: 'id'
 			}
+		},
+		applies_to: {
+			type: DataTypes.STRING,
+			allowNull: false,
+		},
+		start_date: {
+			type: DataTypes.DATE,
+			allowNull: false,
+		},
+		end_date: {
+			type: DataTypes.DATE,
+			allowNull: false,
+		},
+		amount: {
+			type: DataTypes.DECIMAL,
+			allowNull: false,
 		},
 		created_at: {
 			type: DataTypes.DATE,
@@ -34,16 +50,11 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: false,
 			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
 		},
-		active: {
-			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			defaultValue: '1'
-		}
 	}, {
-		tableName: 'kiosk_user',
+		tableName: 'pricing',
 		timestamps: false,
 		underscored: true
 	});
 
-	return kiosk_user;
+	return pricing;
 };

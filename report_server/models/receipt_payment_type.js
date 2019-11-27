@@ -1,28 +1,32 @@
 /* jshint indent: 1 */
 
-module.exports = function(sequelize, DataTypes) {
-	const kiosk_user= sequelize.define('kiosk_user', {
+module.exports = function (sequelize, DataTypes) {
+	const receipt_payment_type = sequelize.define('receipt_payment_type', {
 		id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
 			primaryKey: true,
 			autoIncrement: true
 		},
-		kiosk_id: {
-			type: DataTypes.BIGINT,
+		receipt_id: {
+			type: DataTypes.STRING,
 			allowNull: false,
 			references: {
-				model: 'kiosk',
+				model: 'receipt',
 				key: 'id'
 			}
 		},
-		user_id: {
+		payment_type_id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
 			references: {
-				model: 'user',
+				model: 'payment_type',
 				key: 'id'
 			}
+		},
+		amount: {
+			type: DataTypes.DECIMAL,
+			allowNull: false,
 		},
 		created_at: {
 			type: DataTypes.DATE,
@@ -34,16 +38,11 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: false,
 			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
 		},
-		active: {
-			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			defaultValue: '1'
-		}
 	}, {
-		tableName: 'kiosk_user',
+		tableName: 'receipt_payment_type',
 		timestamps: false,
 		underscored: true
 	});
 
-	return kiosk_user;
+	return receipt_payment_type;
 };
