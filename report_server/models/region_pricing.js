@@ -1,7 +1,7 @@
 /* jshint indent: 1 */
 
 module.exports = function (sequelize, DataTypes) {
-	const region_pricing = sequelize.define('region_pricing', {
+	return sequelize.define('region_pricing', {
 		id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
@@ -55,6 +55,5 @@ module.exports = function (sequelize, DataTypes) {
 		timestamps: false,
 		underscored: true
 	});
-
-	return region_pricing;
+ 
 };
