@@ -380,6 +380,7 @@ const getCustomers = (query, params, res) => {
 				} else {
 					semaLog.info('GET Customers - succeeded');
 					try {
+						console.log(result);
 						if (Array.isArray(result) && result.length >= 1) {
 							var values = result.map(item => {
 								customer = new Customer();

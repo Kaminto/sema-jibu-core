@@ -133,7 +133,7 @@ app.use('/sema/kiosk_users', sema_kiosk_user);
 app.use('/sema/login', seama_login);
 app.use('/sema/daily_production', sema_daily_production);
 app.use('/sema/kiosks', isAuthenticated, seama_kiosks);
-app.use('/sema/site/customers/', isAuthenticated, sema_customers);
+app.use('/sema/site/customers/', sema_customers);
 app.use('/sema/site/receipts/', sema_receipts);
 app.use('/sema/products/', isAuthenticated, sema_products);
 app.use('/sema/sales-channels/', isAuthenticated, sema_sales_channels);

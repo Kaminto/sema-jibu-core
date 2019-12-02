@@ -3,10 +3,9 @@
 module.exports = function(sequelize, DataTypes) {
 	const customer_credit= sequelize.define('customer_credit', {
 		id: {
-			type: DataTypes.BIGINT,
+			type: DataTypes.STRING(255),
 			allowNull: false,
 			primaryKey: true,
-			autoIncrement: true
 		},
 		customer_account_id: {
 			type: DataTypes.STRING,
@@ -23,7 +22,12 @@ module.exports = function(sequelize, DataTypes) {
         balance: {
 			type: DataTypes.DECIMAL,
 			allowNull: false,
-        },
+		},
+		active: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			defaultValue: '1'
+		},
 		created_at: {
 			type: DataTypes.DATE,
 			allowNull: false,
