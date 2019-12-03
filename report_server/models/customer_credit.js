@@ -3,9 +3,15 @@
 module.exports = function(sequelize, DataTypes) {
 	const customer_credit= sequelize.define('customer_credit', {
 		id: {
-			type: DataTypes.STRING(255),
+			type: DataTypes.BIGINT,
 			allowNull: false,
 			primaryKey: true,
+			autoIncrement: true
+		},
+		topUpId: {
+			type: DataTypes.STRING(255),
+			allowNull: false,
+			unique: true
 		},
 		customer_account_id: {
 			type: DataTypes.STRING,

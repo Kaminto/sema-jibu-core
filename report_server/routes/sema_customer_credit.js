@@ -37,7 +37,7 @@ const sqlGetTopUpById = 'SELECT * FROM customer_credit WHERE id = ?';
 
 const sqlInsertTopUp =
     'INSERT INTO customer_credit ' +
-    '(id, created_at, customer_account_id, topup, balance, active ) ' +
+    '(topUpId, created_at, customer_account_id, topup, balance, active ) ' +
     'VALUES (?, ?, ?, ?, ?, ?)';
 
 // const sqlUpdateTopUp = 	"UPDATE customer_credit " +
