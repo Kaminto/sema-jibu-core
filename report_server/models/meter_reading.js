@@ -1,7 +1,7 @@
 /* jshint indent: 1 */
 
-module.exports = function(sequelize, DataTypes) {
-	const kiosk_user= sequelize.define('kiosk_user', {
+module.exports = function (sequelize, DataTypes) {
+	const meter_reading = sequelize.define('meter_reading', {
 		id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
@@ -16,13 +16,9 @@ module.exports = function(sequelize, DataTypes) {
 				key: 'id'
 			}
 		},
-		user_id: {
-			type: DataTypes.BIGINT,
+		meter_value: {
+			type: DataTypes.FLOAT,
 			allowNull: false,
-			references: {
-				model: 'user',
-				key: 'id'
-			}
 		},
 		created_at: {
 			type: DataTypes.DATE,
@@ -34,16 +30,11 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: false,
 			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
 		},
-		active: {
-			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			defaultValue: '1'
-		}
 	}, {
-		tableName: 'kiosk_user',
+		tableName: 'meter_reading',
 		timestamps: false,
 		underscored: true
 	});
 
-	return kiosk_user;
+	return meter_reading;
 };

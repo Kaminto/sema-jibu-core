@@ -1,28 +1,38 @@
 /* jshint indent: 1 */
 
 module.exports = function(sequelize, DataTypes) {
-	const kiosk_user= sequelize.define('kiosk_user', {
+	const customer_credit= sequelize.define('customer_credit', {
 		id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
 			primaryKey: true,
 			autoIncrement: true
 		},
-		kiosk_id: {
-			type: DataTypes.BIGINT,
+		topUpId: {
+			type: DataTypes.STRING(255),
 			allowNull: false,
-			references: {
-				model: 'kiosk',
-				key: 'id'
-			}
+			unique: true
 		},
-		user_id: {
-			type: DataTypes.BIGINT,
+		customer_account_id: {
+			type: DataTypes.STRING,
 			allowNull: false,
 			references: {
-				model: 'user',
+				model: 'customer_account',
 				key: 'id'
 			}
+		},		
+		topup: {
+			type: DataTypes.DECIMAL,
+			allowNull: false,
+        },
+        balance: {
+			type: DataTypes.DECIMAL,
+			allowNull: false,
+		},
+		active: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			defaultValue: '1'
 		},
 		created_at: {
 			type: DataTypes.DATE,
@@ -34,16 +44,11 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: false,
 			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
 		},
-		active: {
-			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			defaultValue: '1'
-		}
 	}, {
-		tableName: 'kiosk_user',
+		tableName: 'customer_credit',
 		timestamps: false,
 		underscored: true
 	});
 
-	return kiosk_user;
+	return customer_credit;
 };
