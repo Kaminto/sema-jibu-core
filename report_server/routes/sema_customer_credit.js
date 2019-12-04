@@ -9,6 +9,13 @@ const sqlSiteIdOnly =
     'SELECT * ' +
     'FROM customer_credit ' +
     "WHERE customer_account_id = ? AND active = b'1'";
+
+const sqlAllTopups =
+    'SELECT * ' +
+    'FROM customer_credit ' +
+    "WHERE active = b'1'";
+
+
 const sqlBeginDateOnly =
     'SELECT * ' +
     'FROM customer_credit ' +
@@ -29,6 +36,12 @@ const sqlUpdatedDate =
     'FROM customer_credit ' +
     'WHERE customer_account_id = ? ' +
     'AND updated_at > ?';
+
+
+    const sqlAllTopsUpdatedDate =
+    'SELECT * ' +
+    'FROM customer_credit ' +
+    'WHERE  updated_at > ?';
 
 
 ///
@@ -98,16 +111,16 @@ router.put('/:id', async (req, res) => {
 
 const updateTopUp = (query, params, res) => {
 
-   
-        customerCreditModel.sequelize.query(query, { replacements: params, type: Sequelize.QueryTypes.UPDATE }).then(result => {
-            if (Array.isArray(result) && result.length >= 1) {
-                semaLog.info('updateTopUp - succeeded');
-                res.json(result);
-            } else {
-                res.json([]);
-            }
-        });
-  
+
+    customerCreditModel.sequelize.query(query, { replacements: params, type: Sequelize.QueryTypes.UPDATE }).then(result => {
+        if (Array.isArray(result) && result.length >= 1) {
+            semaLog.info('updateTopUp - succeeded');
+            res.json(result);
+        } else {
+            res.json([]);
+        }
+    });
+
 
 };
 
@@ -297,6 +310,86 @@ router.get('/', function (req, res) {
                 }
             } else {
                 getTopUps(sqlSiteIdOnly, [req.query['customer_account_id']], res);
+            }
+        }
+    });
+});
+
+
+router.get('/allTopUps', function (req, res) {
+    semaLog.info('GET allTopUps - Enter');
+
+
+    req.getValidationResult().then(function (result) {
+        if (!result.isEmpty()) {
+            const errors = result.array().map(elem => {
+                return elem.msg;
+            });
+            semaLog.error('GET Credits validation error: ', errors);
+            res.status(400).send(errors.toString());
+        } else {
+            if (req.query.hasOwnProperty('updated-date')) {
+                let updatedDate = getUTCDate(
+                    new Date(req.query['updated-date'])
+                );
+
+                if (!isNaN(updatedDate)) {
+                    getTopUps(
+                        sqlAllTopsUpdatedDate,
+                        [updatedDate],
+                        res
+                    );
+                } else {
+                    semaLog.error('GET Credits - Invalid updatedDate');
+                    res.status(400).send('Invalid Date');
+                }
+            } else if (
+                req.query.hasOwnProperty('begin-date') &&
+                req.query.hasOwnProperty('end-date')
+            ) {
+                let beginDate = getUTCDate(new Date(req.query['begin-date']));
+                let endDate = getUTCDate(new Date(req.query['end-date']));
+                if (!isNaN(beginDate) && !isNaN(endDate)) {
+                    getTopUps(
+                        sqlBeginEndDate,
+                        [beginDate, endDate],
+                        res
+                    );
+                } else {
+                    semaLog.error(
+                        'GET Credits - Invalid begin-date/end-date'
+                    );
+                    res.status(400).send('Invalid Date');
+                }
+            } else if (req.query.hasOwnProperty('begin-date')) {
+                let beginDate = getUTCDate(new Date(req.query['begin-date']));
+                semaLog.info(
+                    'GET Credits - beginDate: ' + beginDate.toISOString()
+                );
+                if (!isNaN(beginDate)) {
+                    getTopUps(
+                        sqlBeginDateOnly,
+                        [beginDate],
+                        res
+                    );
+                } else {
+                    semaLog.error('GET Credits - Invalid begin-date');
+                    res.status(400).send('Invalid Date');
+                }
+            } else if (req.query.hasOwnProperty('end-date')) {
+                let endDate = getUTCDate(new Date(req.query['end-date']));
+                if (!isNaN(endDate)) {
+                    getTopUps(
+                        sqlEndDateOnly,
+                        [endDate],
+                        res
+                    );
+                } else {
+                    semaLog.error('GET Credits - Invalid end-date');
+                    res.status(400).send('Invalid Date');
+                }
+            } else {
+                getTopUps(sqlAllTopups, [], res);
             }
         }
     });
