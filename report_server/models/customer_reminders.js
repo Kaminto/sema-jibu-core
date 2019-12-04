@@ -1,28 +1,32 @@
 /* jshint indent: 1 */
 
 module.exports = function(sequelize, DataTypes) {
-	const kiosk_user= sequelize.define('kiosk_user', {
+	const customer_reminders= sequelize.define('customer_reminders', {
 		id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
 			primaryKey: true,
 			autoIncrement: true
 		},
-		kiosk_id: {
+		customer_account_id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
 			references: {
-				model: 'kiosk',
+				model: 'customer_account',
 				key: 'id'
 			}
 		},
-		user_id: {
-			type: DataTypes.BIGINT,
+        frequency: {
+			type: DataTypes.BOOLEAN,
 			allowNull: false,
-			references: {
-				model: 'user',
-				key: 'id'
-			}
+		},
+		show_reminders: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+		},
+		reminder_date: {
+			type: DataTypes.DATE,
+			allowNull: false,
 		},
 		created_at: {
 			type: DataTypes.DATE,
@@ -34,16 +38,11 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: false,
 			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
 		},
-		active: {
-			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			defaultValue: '1'
-		}
 	}, {
-		tableName: 'kiosk_user',
+		tableName: 'customer_reminders',
 		timestamps: false,
 		underscored: true
 	});
 
-	return kiosk_user;
+	return customer_reminders;
 };

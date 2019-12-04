@@ -1,7 +1,7 @@
 /* jshint indent: 1 */
 
 module.exports = function(sequelize, DataTypes) {
-	return sequelize.define('customer_type', {
+	const region_promotion = sequelize.define('region_promotion', {
 		id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
@@ -18,27 +18,34 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: false,
 			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
 		},
-		description: {
-			type: DataTypes.STRING(255),
-			allowNull: true
-		},
-		name: {
-			type: DataTypes.STRING(255),
-			allowNull: false
-		},
-		sales_channel_id: {
+		promotion_id: {
 			type: DataTypes.BIGINT,
-			allowNull: true
-		},
-		active: {
-			type: DataTypes.BOOLEAN,
 			allowNull: false,
-			defaultValue: '1'
-		}
-	},
-	{
-		tableName: 'customer_type',
+			references: {
+				model: 'promotion',
+				key: 'id'
+			}
+		},
+        region_id: {
+			type: DataTypes.BIGINT,
+			allowNull: false,
+			references: {
+				model: 'region',
+				key: 'id'
+			}
+		},
+		kiosk_id: {
+			type: DataTypes.BIGINT,
+			allowNull: false,
+			references: {
+				model: 'kiosk',
+				key: 'id'
+			}
+		},
+	}, {
+		tableName: 'region_promotion',
 		timestamps: false,
 		underscored: true
-	});
+    });
+    return region_promotion;
 };

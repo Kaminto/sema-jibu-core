@@ -1,7 +1,7 @@
 /* jshint indent: 1 */
 
-module.exports = function(sequelize, DataTypes) {
-	const kiosk_user= sequelize.define('kiosk_user', {
+module.exports = function (sequelize, DataTypes) {
+	const kiosk_closing_stock = sequelize.define('kiosk_closing_stock', {
 		id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
@@ -16,13 +16,17 @@ module.exports = function(sequelize, DataTypes) {
 				key: 'id'
 			}
 		},
-		user_id: {
+		product_id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
 			references: {
-				model: 'user',
+				model: 'product',
 				key: 'id'
 			}
+		},
+		quantity: {
+			type: DataTypes.BIGINT,
+			allowNull: false,
 		},
 		created_at: {
 			type: DataTypes.DATE,
@@ -34,16 +38,11 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: false,
 			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
 		},
-		active: {
-			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			defaultValue: '1'
-		}
 	}, {
-		tableName: 'kiosk_user',
+		tableName: 'kiosk_closing_stock',
 		timestamps: false,
 		underscored: true
 	});
 
-	return kiosk_user;
+	return kiosk_closing_stock;
 };

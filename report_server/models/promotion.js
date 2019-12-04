@@ -1,7 +1,7 @@
 /* jshint indent: 1 */
 
 module.exports = function(sequelize, DataTypes) {
-	return sequelize.define('customer_type', {
+	return sequelize.define('promotion', {
 		id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
@@ -18,26 +18,44 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: false,
 			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
 		},
-		description: {
-			type: DataTypes.STRING(255),
-			allowNull: true
+		amount: {
+			type: DataTypes.DECIMAL(19,2),
+			allowNull: false,
 		},
-		name: {
+		applies_to: {
 			type: DataTypes.STRING(255),
 			allowNull: false
 		},
-		sales_channel_id: {
+		base64encoded_image: {
+			type: DataTypes.TEXT,
+			allowNull: false,
+		},
+		start_date: {
+			type: DataTypes.DATE,
+			allowNull: false
+		},
+		end_date: {
+			type: DataTypes.DATE,
+			allowNull: false,
+		},
+		product_id: {
 			type: DataTypes.BIGINT,
+			allowNull: false,
+			references: {
+				model: 'product',
+				key: 'id'
+			}
+		},
+		sku: {
+			type: DataTypes.STRING(255),
+			allowNull: false
+		},
+		type: {
+			type: DataTypes.STRING(255),
 			allowNull: true
 		},
-		active: {
-			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			defaultValue: '1'
-		}
-	},
-	{
-		tableName: 'customer_type',
+	}, {
+		tableName: 'promotion',
 		timestamps: false,
 		underscored: true
 	});

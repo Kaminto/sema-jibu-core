@@ -1,14 +1,30 @@
 /* jshint indent: 1 */
 
-module.exports = function(sequelize, DataTypes) {
-	const kiosk_user= sequelize.define('kiosk_user', {
+module.exports = function (sequelize, DataTypes) {
+	return sequelize.define('region_pricing', {
 		id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
 			primaryKey: true,
 			autoIncrement: true
 		},
-		kiosk_id: {
+		pricing_scheme_id:{
+			type: DataTypes.BIGINT,
+			allowNull: false,
+			references: {
+				model: 'pricing_scheme',
+				key: 'id'
+			}
+		},
+		region_id:{
+			type: DataTypes.BIGINT,
+			allowNull: false,
+			references: {
+				model: 'region',
+				key: 'id'
+			}
+		},
+		kiosk_id:{
 			type: DataTypes.BIGINT,
 			allowNull: false,
 			references: {
@@ -16,11 +32,11 @@ module.exports = function(sequelize, DataTypes) {
 				key: 'id'
 			}
 		},
-		user_id: {
+		pricing_id:{
 			type: DataTypes.BIGINT,
 			allowNull: false,
 			references: {
-				model: 'user',
+				model: 'pricing',
 				key: 'id'
 			}
 		},
@@ -34,16 +50,10 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: false,
 			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
 		},
-		active: {
-			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			defaultValue: '1'
-		}
 	}, {
-		tableName: 'kiosk_user',
+		tableName: 'region_pricing',
 		timestamps: false,
 		underscored: true
 	});
-
-	return kiosk_user;
+ 
 };

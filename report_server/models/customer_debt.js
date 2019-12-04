@@ -1,29 +1,25 @@
 /* jshint indent: 1 */
 
 module.exports = function(sequelize, DataTypes) {
-	const kiosk_user= sequelize.define('kiosk_user', {
+	const customer_debt= sequelize.define('customer_debt', {
 		id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
 			primaryKey: true,
 			autoIncrement: true
 		},
-		kiosk_id: {
-			type: DataTypes.BIGINT,
+		customer_account_id: {
+			type: DataTypes.STRING,
 			allowNull: false,
 			references: {
-				model: 'kiosk',
+				model: 'customer_account',
 				key: 'id'
 			}
 		},
-		user_id: {
-			type: DataTypes.BIGINT,
+        due_amount: {
+			type: DataTypes.DECIMAL,
 			allowNull: false,
-			references: {
-				model: 'user',
-				key: 'id'
-			}
-		},
+        },
 		created_at: {
 			type: DataTypes.DATE,
 			allowNull: false,
@@ -34,16 +30,11 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: false,
 			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
 		},
-		active: {
-			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			defaultValue: '1'
-		}
 	}, {
-		tableName: 'kiosk_user',
+		tableName: 'customer_debt',
 		timestamps: false,
 		underscored: true
 	});
 
-	return kiosk_user;
+	return customer_debt;
 };

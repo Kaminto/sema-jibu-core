@@ -1,28 +1,21 @@
 /* jshint indent: 1 */
 
 module.exports = function(sequelize, DataTypes) {
-	const kiosk_user= sequelize.define('kiosk_user', {
+	const payment_type= sequelize.define('payment_type', {
 		id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
 			primaryKey: true,
 			autoIncrement: true
 		},
-		kiosk_id: {
-			type: DataTypes.BIGINT,
+		name: {
+			type: DataTypes.STRING,
 			allowNull: false,
-			references: {
-				model: 'kiosk',
-				key: 'id'
-			}
-		},
-		user_id: {
-			type: DataTypes.BIGINT,
+		},		
+		active: {
+			type: DataTypes.BOOLEAN,
 			allowNull: false,
-			references: {
-				model: 'user',
-				key: 'id'
-			}
+			defaultValue: '1'
 		},
 		created_at: {
 			type: DataTypes.DATE,
@@ -34,16 +27,11 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: false,
 			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
 		},
-		active: {
-			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			defaultValue: '1'
-		}
 	}, {
-		tableName: 'kiosk_user',
+		tableName: 'payment_type',
 		timestamps: false,
 		underscored: true
 	});
 
-	return kiosk_user;
+	return payment_type;
 };
