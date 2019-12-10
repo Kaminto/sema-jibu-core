@@ -49,7 +49,7 @@ router.post('/', async (req, res) => {
 		});
 
 		let kioskObj = await kiosk.findOne({
-			id:kioskUser.kiosk_id
+			id:kioskUser[0].kiosk_id
 		});
 
 		let data={
