@@ -49,7 +49,8 @@ router.post('/', async (req, res) => {
 		});
 
 		let kioskObj = await kiosk.findOne({
-			id:kioskUser[0].kiosk_id
+			semaLog.warn('sema_login kiosk id' + kioskUser.kiosk_id);
+			where:{id:kioskUser.kiosk_id}
 		});
 
 		let data={
