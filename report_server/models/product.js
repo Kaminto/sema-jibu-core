@@ -75,6 +75,10 @@ module.exports = function(sequelize, DataTypes) {
 		base64encoded_image: {
 			type: DataTypes.TEXT,
 			allowNull: false
+		},
+		wastage_name: {
+			type: DataTypes.STRING(255),
+			allowNull: true
 		}
 	}, {
 		tableName: 'product',
