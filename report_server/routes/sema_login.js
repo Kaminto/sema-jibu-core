@@ -48,8 +48,8 @@ router.post('/', async (req, res) => {
 			where:{user_id:user.id},
 		});
 
+		semaLog.warn('sema_login kiosk id' + kioskUser.kiosk_id);
 		let kioskObj = await kiosk.findOne({
-			semaLog.warn('sema_login kiosk id' + kioskUser.kiosk_id);
 			where:{id:kioskUser.kiosk_id}
 		});
 
