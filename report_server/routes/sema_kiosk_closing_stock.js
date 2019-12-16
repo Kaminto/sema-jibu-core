@@ -9,11 +9,6 @@ const sqlSiteIdOnly =
     'FROM kiosk_closing_stock ' +
     "WHERE kiosk_id = ? AND active = b'1'";
 
-const sqlAllTopups =
-    'SELECT * ' +
-    'FROM kiosk_closing_stock ' +
-    "WHERE active = b'1'";
-
 const sqlBeginDateOnly =
     'SELECT * ' +
     'FROM kiosk_closing_stock ' +
@@ -45,27 +40,22 @@ const sqlAllTopsUpdatedDate =
 
 
 ///
-const sqlDeleteClosingStock = 'DELETE FROM kiosk_closing_stock WHERE id = ?';
-const sqlGetClosingStockById = 'SELECT * FROM kiosk_closing_stock WHERE id = ?';
+const sqlDeleteClosingStock = 'DELETE FROM kiosk_closing_stock WHERE closingStockId = ?';
+const sqlGetClosingStockById = 'SELECT * FROM kiosk_closing_stock WHERE closingStockId = ?';
 
 const sqlInsertClosingStock =
     'INSERT INTO kiosk_closing_stock ' +
     '(closingStockId, created_at, kiosk_id, product_id, quantity, active ) ' +
     'VALUES (?, ?, ?, ?, ?, ?)';
 
-// const sqlUpdateClosingStock = 	"UPDATE customer_credit " +
-// 	"SET name = ?, sales_channel_id = ?, customer_type_id = ?," +
-// 		"due_amount = ?, address_line1 = ?, gps_coordinates = ?, " +
-// 		"phone_number = ?, active = ? " +
-// 	"WHERE id = ?";
 const sqlUpdateClosingStock =
     'UPDATE kiosk_closing_stock ' +
     'SET quantity = ?, active = ? ' +
-    'WHERE id = ?';
+    'WHERE closingStockId = ?';
 
-router.put('/:id', async (req, res) => {
+router.put('/:closingStockId', async (req, res) => {
     semaLog.info('PUT kiosk_closing_stock - Enter');
-    req.check('id', 'Parameter id is missing').exists();
+    req.check('closingStockId', 'Parameter closingStockId is missing').exists();
 
     req.getValidationResult().then(function (result) {
         if (!result.isEmpty()) {
@@ -75,8 +65,8 @@ router.put('/:id', async (req, res) => {
             semaLog.error('PUT kiosk_closing_stock, Validation error' + errors.toString());
             res.status(400).send(errors.toString());
         } else {
-            semaLog.info('ClosingStockId: ' + req.params.id);
-            findClosingStock(sqlGetClosingStockById, [req.params.id]).then(
+            semaLog.info('ClosingStockId: ' + req.params.closingStockId);
+            findClosingStock(sqlGetClosingStockById, [req.params.closingStockId]).then(
                 function (result) {
 
 
@@ -90,7 +80,7 @@ router.put('/:id', async (req, res) => {
                     } else {
                         closingStockParams.push(1);
                     }
-                    closingStockParams.push(req.params.id);
+                    closingStockParams.push(req.params.closingStockId);
                     updateClosingStock(
                         sqlUpdateClosingStock,
                         closingStockParams,
@@ -99,8 +89,8 @@ router.put('/:id', async (req, res) => {
                 },
                 function (reason) {
                     res.status(404).send(
-                        'PUT customer: Could not find customer with id ' +
-                        req.params.id
+                        'PUT customer: Could not find customer with closingStockId ' +
+                        req.params.closingStockId
                     );
                 }
             );
@@ -123,10 +113,10 @@ const updateClosingStock = (query, params, res) => {
 
 };
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:closingStockId', async (req, res) => {
     semaLog.info('DELETE sema_customer - Enter');
 
-    semaLog.info(req.params.id);
+    semaLog.info(req.params.closingStockId);
 
     req.getValidationResult().then(function (result) {
         if (!result.isEmpty()) {
@@ -136,16 +126,16 @@ router.delete('/:id', async (req, res) => {
             semaLog.error('Delete customer. Validation error');
             res.status(400).send(errors.toString());
         } else {
-            findClosingStock(sqlGetClosingStockById, [req.params.id]).then(
+            findClosingStock(sqlGetClosingStockById, [req.params.closingStockId]).then(
                 function (result) {
                     console.log(result);
                     semaLog.info('result - Enter', result);
 
-                    deleteClosingStock(sqlDeleteClosingStock, [req.params.id], res);
+                    deleteClosingStock(sqlDeleteClosingStock, [req.params.closingStockId], res);
                 },
                 function (reason) {
                     res.status(404).send(
-                        'Delete customer. Could not find customer with that id'
+                        'Delete customer. Could not find customer with that closingStockId'
                     );
                 }
             );
@@ -202,7 +192,6 @@ router.post('/', async (req, res) => {
             );
             res.status(400).send(errors.toString());
         } else {
-
             let postSqlParams = [
                 req.body.closingStockId,
                 getUTCDate(new Date()),
@@ -211,7 +200,6 @@ router.post('/', async (req, res) => {
                 req.body.quantity,
                 1,
             ];
-
 
             insertClosingStock(sqlInsertClosingStock, postSqlParams, res);
         }
