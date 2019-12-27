@@ -51,7 +51,7 @@ const sqlUpdateCustomers =
 	'UPDATE customer_account ' +
 	'SET name = ?, sales_channel_id = ?, customer_type_id = ?,' +
 	'due_amount = ?, address_line1 = ?, gps_coordinates = ?, ' +
-	'phone_number = ?,frequency = ?, reminder_date=?,active = ? ' +
+	'phone_number = ?, frequency = ?, reminder_date=?,active = ? ' +
 	'WHERE id = ?';
 
 router.put('/:id', async (req, res) => {
@@ -274,7 +274,7 @@ const insertCustomers = (customer, query, params, res) => {
 				semaLog.error('customers - failed', { err });
 				res.status(500).send(err.message);
 			} else {
-				semaLog.info('CREATE customer - succeeded');
+				semaLog.info('CREATE customerg - succeeded');
 
 				try {
 					res.json(customer.classToPlain());

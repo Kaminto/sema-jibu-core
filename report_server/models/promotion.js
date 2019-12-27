@@ -28,7 +28,7 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		base64encoded_image: {
 			type: DataTypes.TEXT,
-			allowNull: false,
+			allowNull: true,
 		},
 		start_date: {
 			type: DataTypes.DATE,
@@ -40,15 +40,31 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		product_id: {
 			type: DataTypes.BIGINT,
-			allowNull: false,
+			allowNull: true,
 			references: {
 				model: 'product',
 				key: 'id'
 			}
 		},
+		region_id: {
+			type: DataTypes.BIGINT,
+			allowNull: false,
+			references: {
+				model: 'region',
+				key: 'id'
+			}
+		},
+		kiosk_id: {
+			type: DataTypes.BIGINT,
+			allowNull: false,
+			references: {
+				model: 'kiosk',
+				key: 'id'
+			}
+		},
 		sku: {
 			type: DataTypes.STRING(255),
-			allowNull: false
+			allowNull: true
 		},
 		type: {
 			type: DataTypes.STRING(255),

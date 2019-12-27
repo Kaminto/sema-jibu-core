@@ -1,5 +1,5 @@
 /* jshint indent: 1 */
-
+const promotion = require('./index').promotion;
 module.exports = function(sequelize, DataTypes) {
 	const region_promotion = sequelize.define('region_promotion', {
 		id: {
@@ -46,6 +46,6 @@ module.exports = function(sequelize, DataTypes) {
 		tableName: 'region_promotion',
 		timestamps: false,
 		underscored: true
-    });
+	});	
     return region_promotion;
 };
