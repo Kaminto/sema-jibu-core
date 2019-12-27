@@ -70,6 +70,11 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.STRING(255),
 			allowNull: true
 		},
+		active: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			defaultValue: '1'
+		},
 	}, {
 		tableName: 'promotion',
 		timestamps: false,
