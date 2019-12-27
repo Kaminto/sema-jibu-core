@@ -66,10 +66,10 @@ router.get('/:kiosk_id', function (req, res) {
                 }
             })
 
-           return res.status(200).json({ schema, pricing });
+           return res.status(200).json({ schema: schema[0], pricing });
         }
 
-        return res.status(200).json({ pricing: [] });
+        return res.status(200).json({ schema: {}, pricing: [] });
 
     });
 });
