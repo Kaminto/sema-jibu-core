@@ -53,7 +53,20 @@ router.get('/:kiosk_id', function (req, res) {
                 }
             })
 
-           return res.status(200).json({ pricing });
+            let schema = result.map(element => {
+                return {
+                    id: element.id,
+                    name: element.name,
+                    description: element.description,
+                    region_id: element.region_id,
+                    kiosk_id: element.kiosk_id,
+                    active: element.active,
+                    created_at: element.created_at,
+                    updated_at: element.updated_at,
+                }
+            })
+
+           return res.status(200).json({ schema, pricing });
         }
 
         return res.status(200).json({ pricing: [] });
