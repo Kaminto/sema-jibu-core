@@ -4,7 +4,7 @@ const router = express.Router();
 const semaLog = require(`${__basedir}/seama_services/sema_logger`);
 const promotion = require('../models').promotion;
 const kiosk = require('../models').kiosk;
-
+const Op = Sequelize.Op
 /* GET Promotion in the database. */
 router.get('/:kiosk_id', function (req, res) {
 
@@ -17,7 +17,9 @@ router.get('/:kiosk_id', function (req, res) {
             include: [
                 {
                     where: {
-                        kiosk_id
+                        kiosk_id,
+                        start_date: { [Op.lte]: new Date() },
+                        end_date: { [Op.gte]: new Date() }
                     },
                     model: promotion
                 },]
