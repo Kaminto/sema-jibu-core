@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const semaLog = require(`${__basedir}/seama_services/sema_logger`);
 const pricing_scheme=require('../models').pricing_scheme;
-
+const Sequelize = require('sequelize');
 /* GET Pricing Schemes in the database. */
 router.get('/', function(req, res) {
 	semaLog.info('Pricing Schemes - Enter');

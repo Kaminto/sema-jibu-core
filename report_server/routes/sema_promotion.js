@@ -6,6 +6,25 @@ const promotion = require('../models').promotion;
 const kiosk = require('../models').kiosk;
 const Op = Sequelize.Op
 /* GET Promotion in the database. */
+
+router.get('/', function (req, res) {
+
+    kiosk.hasMany(promotion);
+    semaLog.info('Promotion - Enter');
+    kiosk.findAll(
+        {
+
+            include: [
+                {
+                    model: promotion
+                },]
+        }
+
+    ).then((promotion) => {
+        res.status(200).json({ promotion });
+    });
+});
+
 router.get('/:kiosk_id', function (req, res) {
 
     kiosk.hasMany(promotion);
