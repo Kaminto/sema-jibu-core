@@ -14,7 +14,7 @@ router.get('/', function(req, res) {
 router.post('/', function (req, res, next) {
     semaLog.info(req.body);
     req.check('region_id', 'Parameter region_id is missing').exists();
-    req.check('kiosk_id', 'Parameter kiosk_id is missing').exists();
+  //  req.check('kiosk_id', 'Parameter kiosk_id is missing').exists();
 	req.check('description', 'Parameter description is missing').exists();
     req.check('name', 'Parameter name is missing').exists();
 
