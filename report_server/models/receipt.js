@@ -41,6 +41,26 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.DECIMAL,
 			allowNull: true
 		},
+
+
+
+		amount_bank: {
+			type: DataTypes.DECIMAL,
+			allowNull: true
+		},
+		amount_cheque: {
+			type: DataTypes.DECIMAL,
+			allowNull: true
+		},
+		amountjibuCredit: {
+			type: DataTypes.DECIMAL,
+			allowNull: true
+		},
+
+		isWalkIn: {
+			type: DataTypes.BOOLEAN,
+			allowNull: true
+		},
 		amount_card: {
 			type: DataTypes.DECIMAL,
 			allowNull: true
