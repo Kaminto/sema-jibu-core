@@ -42,10 +42,10 @@ var sema_customer_reminders = require('./routes/sema_customer_reminders');
 let sema_kiosk_closing_stock = require('./routes/sema_kiosk_closing_stock');
 
 var sema_meter_reading = require('./routes/sema_meter_reading');
-let sema_payment_type = require('./routes/sema_payment_type');
 var sema_pricing = require('./routes/sema_pricing');
 let sema_pricing_scheme = require('./routes/sema_pricing_scheme');
 var sema_receipt_payment_type = require('./routes/sema_receipt_payment_type');
+let sema_payment_type = require('./routes/sema_payment_type');
 let sema_region_pricing = require('./routes/sema_region_pricing');
 let sema_region_promotion = require('./routes/sema_region_promotion');
 
@@ -165,9 +165,9 @@ app.use('/sema/kiosk_closing_stock/', sema_kiosk_closing_stock);
 
 app.use('/sema/customer_credit/', sema_customer_credit);
 app.use('/sema/customer_debt/', sema_customer_debt);
-app.use('/sema/payment_type/', sema_receipt_payment_type);
-app.use('/sema/customer_reminders/', sema_customer_reminders);
+app.use('/sema/receipt_payment_type/', sema_receipt_payment_type);
 app.use('/sema/payment_type/', sema_payment_type);
+app.use('/sema/customer_reminders/', sema_customer_reminders);
 app.use('/sema/pricing_scheme/', sema_pricing_scheme);
 
 

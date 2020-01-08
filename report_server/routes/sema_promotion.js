@@ -29,7 +29,7 @@ router.get('/:kiosk_id', function (req, res) {
 
     kiosk.hasMany(promotion);
     semaLog.info('Promotion - Enter');
-    let kiosk_id=req.params.kiosk_id;
+    let kiosk_id = req.params.kiosk_id;
     kiosk.findAll(
         {
 
@@ -55,7 +55,7 @@ router.post('/', function (req, res, next) {
     req.check('sku', 'Parameter sku is missing').exists();
     req.check('region_id', 'Parameter region_id is missing').exists();
     req.check('kiosk_id', 'Parameter kiosk_id is missing').exists();
-   // req.check('product_id', 'Parameter product_id is missing').exists();
+    // req.check('product_id', 'Parameter product_id is missing').exists();
     req.check('end_date', 'Parameter end_date is missing').exists();
     req.check('start_date', 'Parameter start_date is missing').exists();
     //req.check('base64encoded_image', 'Parameter base64encoded_image is missing').exists();
