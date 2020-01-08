@@ -1,6 +1,6 @@
 /* jshint indent: 1 */
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
 	return sequelize.define('customer_account', {
 		id: {
 			type: DataTypes.STRING(255),
@@ -118,14 +118,14 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.INTEGER(11),
 			allowNull: true
 		},
-		frequency :{
+		frequency: {
 			type: DataTypes.TEXT,
-			allowNull:false
+			allowNull: false
 		},
-		reminder_date:{
-		   type:DataTypes.DATE,
-				   allowNull:false
-		   }
+		reminder_date: {
+			type: DataTypes.DATE,
+			allowNull: false
+		}
 	}, {
 		tableName: 'customer_account',
 		timestamps: false,

@@ -44,21 +44,21 @@ module.exports = function(sequelize, DataTypes) {
 
 
 
-		amount_bank: {
-			type: DataTypes.DECIMAL,
-			allowNull: true
-		},
-		amount_cheque: {
-			type: DataTypes.DECIMAL,
-			allowNull: true
-		},
-		amountjibuCredit: {
-			type: DataTypes.DECIMAL,
-			allowNull: true
-		},
+		// amount_bank: {
+		// 	type: DataTypes.DECIMAL,
+		// 	allowNull: true
+		// },
+		// amount_cheque: {
+		// 	type: DataTypes.DECIMAL,
+		// 	allowNull: true
+		// },
+		// amountjibuCredit: {
+		// 	type: DataTypes.DECIMAL,
+		// 	allowNull: true
+		// },
 
-		isWalkIn: {
-			type: DataTypes.BOOLEAN,
+		delivery: {
+			type: DataTypes.ENUM('walkin', 'delivery'),
 			allowNull: true
 		},
 		amount_card: {
