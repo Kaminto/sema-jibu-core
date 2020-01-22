@@ -38,6 +38,10 @@ module.exports = function(sequelize, DataTypes) {
 				key: 'id'
 			}
 		},
+		notes: {
+			type: DataTypes.STRING(45),
+			allowNull: false
+		},
 		product_id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,

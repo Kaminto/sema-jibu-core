@@ -17,22 +17,22 @@ const moment = require('moment');
 var sqlInsertReceipt = "INSERT INTO receipt " +
 	"(id, created_at, updated_at, currency_code, " +
 	"customer_account_id, amount_cash, amount_mobile, amount_loan,amount_bank,amount_cheque,amountjibuCredit,isWalkIn, amount_card, " +
-	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid )" +
-	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
+	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid, delivery )" +
+	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
 
 var sqlInsertReceiptActive = "INSERT INTO receipt " +
 	"(id, created_at, updated_at, currency_code, " +
 	"customer_account_id, amount_cash, amount_mobile, amount_loan,amount_bank,amount_cheque,amountjibuCredit,isWalkIn, amount_card, " +
-	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid, active)" +
-	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid, active, delivery)" +
+	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 var sqlInsertReceiptLineItem = "INSERT INTO receipt_line_item " +
-	"(created_at, updated_at, currency_code, price_total, quantity, receipt_id, product_id, cogs_total) " +
-	"VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+	"(created_at, updated_at, currency_code, price_total, quantity, receipt_id, product_id, cogs_total,notes) " +
+	"VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)";
 
 var sqlInsertReceiptLineItemActive = "INSERT INTO receipt_line_item " +
-	"(created_at, updated_at, currency_code, price_total, quantity, receipt_id, product_id, cogs_total, active) " +
-	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	"(created_at, updated_at, currency_code, price_total, quantity, receipt_id, product_id, cogs_total, active,notes) " +
+	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 // Returns all receipts for the site and the date passed, except for those in `exceptionList`
 const getReceipts = (siteId, exceptionList, date) => {
@@ -197,7 +197,8 @@ router.post('/', async (req, res) => {
 
 				let postSqlParams = [receipt.id, receipt.createdDate, receipt.updatedDate, receipt.currencyCode,
 				receipt.customerId, receipt.amountCash, receipt.amountMobile, receipt.amountLoan, receipt.amountCard,
-				receipt.siteId, receipt.paymentType, receipt.salesChannelId, receipt.customerTypeId, receipt.total, receipt.cogs, receipt.receiptId];
+				receipt.siteId, receipt.paymentType, receipt.salesChannelId, receipt.customerTypeId, receipt.total, receipt.cogs,
+				receipt.receiptId, receipt.delivery];
 
 				if ('active' in req.body) {
 					postSqlParams.push(req.body.active);
@@ -242,7 +243,8 @@ const insertReceipt = (receipt, query, params, res) => {
 								receipt.products[i].quantity,
 								receipt.products[i].receiptId,
 								receipt.products[i].productId,
-								receipt.products[i].cogsTotal
+								receipt.products[i].cogsTotal,
+								receipt.products[i].notes
 							];
 
 							if ('active' in receipt.products[i]) {
