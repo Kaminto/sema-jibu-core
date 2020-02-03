@@ -16,6 +16,10 @@ module.exports = function (sequelize, DataTypes) {
 				key: 'id'
 			}
 		},
+		receipt_payment_type_id: {
+			type: DataTypes.STRING,
+			allowNull: false,
+		},
 		payment_type_id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
@@ -23,6 +27,11 @@ module.exports = function (sequelize, DataTypes) {
 				model: 'payment_type',
 				key: 'id'
 			}
+		},
+		active: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			defaultValue: '1'
 		},
 		amount: {
 			type: DataTypes.DECIMAL,

@@ -16,6 +16,15 @@ module.exports = function(sequelize, DataTypes) {
 				key: 'id'
 			}
 		},
+		customerDebtId: {
+			type: DataTypes.STRING,
+			allowNull: false,
+		},
+		active: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			defaultValue: '1'
+		},
         due_amount: {
 			type: DataTypes.DECIMAL,
 			allowNull: false,
