@@ -16,7 +16,7 @@ router.post('/', function (req, res, next) {
 	semaLog.info(req.body);
 	semaLog.info('Customer Debt - Enter');
 	req.check('customer_account_id', 'Parameter customer_account_id is missing').exists();
-	req.check('customerDebtId', 'Parameter customerDebtId is missing').exists();
+	req.check('customer_debt_id', 'Parameter customer_debt_id is missing').exists();
 	req.check('due_amount', 'Parameter due_amount is missing').exists();
 
 
@@ -44,9 +44,9 @@ router.post('/', function (req, res, next) {
 });
 
 
-router.delete('/:customerDebtId', async (req, res) => {
+router.delete('/:customer_debt_id', async (req, res) => {
 	semaLog.info('DELETE customer_debt - Enter');
-	semaLog.info(req.params.customerDebtId);
+	semaLog.info(req.params.customer_debt_id);
 	req.getValidationResult().then(function (result) {
 		if (!result.isEmpty()) {
 			const errors = result.array().map(elem => {
@@ -55,12 +55,12 @@ router.delete('/:customerDebtId', async (req, res) => {
 			semaLog.error('Delete Customer Debt. Validation error');
 			res.status(400).send(errors.toString());
 		} else {
-			findCustomerDebt('SELECT * FROM customer_debt WHERE customerDebtId = ?', [req.params.customerDebtId]).then(
+			findCustomerDebt('SELECT * FROM customer_debt WHERE customer_debt_id = ?', [req.params.customer_debt_id]).then(
 				function (result) {
 					console.log(result);
 					semaLog.info('result - Enter', result);
 
-					deleteCustomerDebt('DELETE FROM customer_debt WHERE customerDebtId = ?', [req.params.customerDebtId], res);
+					deleteCustomerDebt('DELETE FROM customer_debt WHERE customer_debt_id = ?', [req.params.customer_debt_id], res);
 				},
 				function (reason) {
 					res.status(404).send(
@@ -99,9 +99,9 @@ const deleteCustomerDebt = (query, params, res) => {
 };
 
 
-router.put('/:customerDebtId', async (req, res) => {
+router.put('/:customer_debt_id', async (req, res) => {
 	semaLog.info('PUT customer_credit - Enter');
-	req.check('customerDebtId', 'Parameter customerDebtId is missing').exists();
+	req.check('customer_debt_id', 'Parameter customer_debt_id is missing').exists();
 
 	req.getValidationResult().then(function (result) {
 		if (!result.isEmpty()) {
@@ -111,8 +111,8 @@ router.put('/:customerDebtId', async (req, res) => {
 			semaLog.error('PUT customer, Validation error' + errors.toString());
 			res.status(400).send(errors.toString());
 		} else {
-			semaLog.info('customerDebtId: ' + req.params.customerDebtId);
-			findCustomerDebt('SELECT * FROM customer_debt WHERE customerDebtId = ?', [req.params.customerDebtId]).then(
+			semaLog.info('customer_debt_id: ' + req.params.customer_debt_id);
+			findCustomerDebt('SELECT * FROM customer_debt WHERE customer_debt_id = ?', [req.params.customer_debt_id]).then(
 				function (result) {
 
 					let customerDebtParams = [
@@ -127,11 +127,11 @@ router.put('/:customerDebtId', async (req, res) => {
                         customerParams.push(1);
                     }
 					
-					customerDebtParams.push(req.params.customerDebtId);
+					customerDebtParams.push(req.params.customer_debt_id);
 					const sqlUpdatecustomerDebt =
 						'UPDATE customer_debt ' +
 						'SET customer_account_id = ?, due_amount = ?, active = ? ' +
-						'WHERE customerDebtId = ?';
+						'WHERE customer_debt_id = ?';
 					updatecustomerDebt(
 						sqlUpdatecustomerDebt,
 						customerDebtParams,
@@ -140,8 +140,8 @@ router.put('/:customerDebtId', async (req, res) => {
 				},
 				function (reason) {
 					res.status(404).send(
-						'PUT customerDebt: Could not find customer with customerDebtId ' +
-						req.params.customerDebtId
+						'PUT customerDebt: Could not find customer with customer_debt_id ' +
+						req.params.customer_debt_id
 					);
 				}
 			);
