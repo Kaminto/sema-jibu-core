@@ -16,7 +16,7 @@ module.exports = function(sequelize, DataTypes) {
 				key: 'id'
 			}
 		},
-		customerDebtId: {
+		customer_debt_id: {
 			type: DataTypes.STRING,
 			allowNull: false,
 		},
