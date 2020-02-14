@@ -11,27 +11,29 @@ router.use(bodyParser.urlencoded({ extended: false }));
 const sqlSiteIdOnly =
 	'SELECT * ' +
 	'FROM customer_account ' +
-	"WHERE kiosk_id = ? AND active = b'1'";
+	"WHERE kiosk_id = ? AND active = b'1' ORDER BY name ASC";
 const sqlBeginDateOnly =
 	'SELECT * ' +
 	'FROM customer_account ' +
-	"WHERE kiosk_id = ? AND active = b'1'" +
+	"WHERE kiosk_id = ? AND active = b'1'  ORDER BY name ASC" +
 	'AND created_at >= ?';
 const sqlEndDateOnly =
 	'SELECT * ' +
 	'FROM customer_account ' +
 	"WHERE kiosk_id = ? AND active = b'1'" +
-	'AND created_at <= ?';
+	'AND created_at <= ?  ORDER BY name ASC';
 const sqlBeginEndDate =
 	'SELECT * ' +
 	'FROM customer_account ' +
 	"WHERE kiosk_id = ? AND active = b'1'" +
-	'AND created_at BETWEEN ? AND ?';
+	'AND created_at BETWEEN ? AND ?' +
+	  ' ORDER BY name ASC;
 const sqlUpdatedDate =
 	'SELECT * ' +
 	'FROM customer_account ' +
 	'WHERE kiosk_id = ? ' +
-	'AND updated_at > ?';
+	'AND updated_at > ?' +
+	  ' ORDER BY name ASC;
 
 const sqlDeleteCustomers = 'DELETE FROM customer_account WHERE id = ?';
 const sqlGetCustomerById = 'SELECT * FROM customer_account WHERE id = ?';
@@ -39,8 +41,8 @@ const sqlGetCustomerById = 'SELECT * FROM customer_account WHERE id = ?';
 const sqlInsertCustomer =
 	'INSERT INTO customer_account ' +
 	'(id, created_at, name, customer_type_id, sales_channel_id, kiosk_id, ' +
-	'due_amount, address_line1, gps_coordinates, phone_number, active, frequency, second_phone_number ) ' +
-	'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+	'due_amount, address_line1, gps_coordinates, phone_number, active ) ' +
+	'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
 // const sqlUpdateCustomers = 	"UPDATE customer_account " +
 // 	"SET name = ?, sales_channel_id = ?, customer_type_id = ?," +
@@ -51,7 +53,7 @@ const sqlUpdateCustomers =
 	'UPDATE customer_account ' +
 	'SET name = ?, sales_channel_id = ?, customer_type_id = ?,' +
 	'due_amount = ?, address_line1 = ?, gps_coordinates = ?, ' +
-	'phone_number = ?, frequency = ?, reminder_date=?,active = ? ' +
+	'phone_number = ?,frequency = ?, reminder_date=?,active = ? ' +
 	'WHERE id = ?';
 
 router.put('/:id', async (req, res) => {
@@ -256,9 +258,7 @@ router.post('/', async (req, res) => {
 				customer.address,
 				customer.gpsCoordinates,
 				customer.phoneNumber,
-				1,
-				customer.frequency,
-				customer.secondPhoneNumber
+				1
 			];
 
 			insertCustomers(customer, sqlInsertCustomer, postSqlParams, res);
@@ -274,7 +274,7 @@ const insertCustomers = (customer, query, params, res) => {
 				semaLog.error('customers - failed', { err });
 				res.status(500).send(err.message);
 			} else {
-				semaLog.info('CREATE customerg - succeeded');
+				semaLog.info('CREATE customer - succeeded');
 
 				try {
 					res.json(customer.classToPlain());
@@ -381,7 +381,6 @@ const getCustomers = (query, params, res) => {
 				} else {
 					semaLog.info('GET Customers - succeeded');
 					try {
-						console.log(result);
 						if (Array.isArray(result) && result.length >= 1) {
 							var values = result.map(item => {
 								customer = new Customer();
