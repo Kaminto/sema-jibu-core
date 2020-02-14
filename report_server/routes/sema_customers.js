@@ -8,20 +8,47 @@ router.use(bodyParser.urlencoded({ extended: false }));
 
 /* GET customers in the database. */
 
+// const sqlSiteIdOnly =
+// 	'SELECT * ' +
+// 	'FROM customer_account ' +
+// 	"WHERE kiosk_id = ? AND active = b'1'";
+// const sqlBeginDateOnly =
+// 	'SELECT * ' +
+// 	'FROM customer_account ' +
+// 	"WHERE kiosk_id = ? AND active = b'1'" +
+// 	'AND created_at >= ?';
+// const sqlEndDateOnly =
+// 	'SELECT * ' +
+// 	'FROM customer_account ' +
+// 	"WHERE kiosk_id = ? AND active = b'1'" +
+// 	'AND created_at <= ?';
+// const sqlBeginEndDate =
+// 	'SELECT * ' +
+// 	'FROM customer_account ' +
+// 	"WHERE kiosk_id = ? AND active = b'1'" +
+// 	'AND created_at BETWEEN ? AND ?';
+// const sqlUpdatedDate =
+// 	'SELECT * ' +
+// 	'FROM customer_account ' +
+// 	'WHERE kiosk_id = ? ' +
+// 	'AND updated_at > ?';
 const sqlSiteIdOnly =
 	'SELECT * ' +
 	'FROM customer_account ' +
-	"WHERE kiosk_id = ? AND active = b'1' ORDER BY name ASC";
+	"WHERE kiosk_id = ? AND active = b'1'" +
+	 " ORDER BY name ASC";
 const sqlBeginDateOnly =
 	'SELECT * ' +
 	'FROM customer_account ' +
-	"WHERE kiosk_id = ? AND active = b'1'  ORDER BY name ASC" +
-	'AND created_at >= ?';
+	"WHERE kiosk_id = ? AND active = b'1'" +
+	'AND created_at >= ?' +
+	 " ORDER BY name ASC";
 const sqlEndDateOnly =
 	'SELECT * ' +
 	'FROM customer_account ' +
 	"WHERE kiosk_id = ? AND active = b'1'" +
-	'AND created_at <= ?  ORDER BY name ASC';
+	'AND created_at <= ?' +
+	 " ORDER BY name ASC';
 const sqlBeginEndDate =
 	'SELECT * ' +
 	'FROM customer_account ' +
@@ -35,14 +62,15 @@ const sqlUpdatedDate =
 	'AND updated_at > ?' +
 	  ' ORDER BY name ASC;
 
+
 const sqlDeleteCustomers = 'DELETE FROM customer_account WHERE id = ?';
 const sqlGetCustomerById = 'SELECT * FROM customer_account WHERE id = ?';
 
 const sqlInsertCustomer =
 	'INSERT INTO customer_account ' +
 	'(id, created_at, name, customer_type_id, sales_channel_id, kiosk_id, ' +
-	'due_amount, address_line1, gps_coordinates, phone_number, active ) ' +
-	'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+	'due_amount, address_line1, gps_coordinates, phone_number, active, second_phone_number ) ' +
+	'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
 // const sqlUpdateCustomers = 	"UPDATE customer_account " +
 // 	"SET name = ?, sales_channel_id = ?, customer_type_id = ?," +
@@ -258,7 +286,8 @@ router.post('/', async (req, res) => {
 				customer.address,
 				customer.gpsCoordinates,
 				customer.phoneNumber,
-				1
+				1,
+				customer.secondPhoneNumber
 			];
 
 			insertCustomers(customer, sqlInsertCustomer, postSqlParams, res);
@@ -381,6 +410,7 @@ const getCustomers = (query, params, res) => {
 				} else {
 					semaLog.info('GET Customers - succeeded');
 					try {
+						console.log(result);
 						if (Array.isArray(result) && result.length >= 1) {
 							var values = result.map(item => {
 								customer = new Customer();
