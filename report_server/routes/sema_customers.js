@@ -36,31 +36,31 @@ const sqlSiteIdOnly =
 	'SELECT * ' +
 	'FROM customer_account ' +
 	"WHERE kiosk_id = ? AND active = b'1'" +
-	 " ORDER BY name ASC";
+	 ' ORDER BY name ASC';
 const sqlBeginDateOnly =
 	'SELECT * ' +
 	'FROM customer_account ' +
 	"WHERE kiosk_id = ? AND active = b'1'" +
-	'AND created_at >= ?' +
-	 " ORDER BY name ASC";
+	'AND created_at >= ? ' +
+	 ' ORDER BY name ASC';
 const sqlEndDateOnly =
 	'SELECT * ' +
 	'FROM customer_account ' +
 	"WHERE kiosk_id = ? AND active = b'1'" +
 	'AND created_at <= ?' +
-	 " ORDER BY name ASC';
+	 ' ORDER BY name ASC';
 const sqlBeginEndDate =
 	'SELECT * ' +
 	'FROM customer_account ' +
 	"WHERE kiosk_id = ? AND active = b'1'" +
 	'AND created_at BETWEEN ? AND ?' +
-	  ' ORDER BY name ASC;
+	  ' ORDER BY name ASC ';
 const sqlUpdatedDate =
 	'SELECT * ' +
 	'FROM customer_account ' +
 	'WHERE kiosk_id = ? ' +
-	'AND updated_at > ?' +
-	  ' ORDER BY name ASC;
+	'AND updated_at > ? ' +
+	  ' ORDER BY name ASC';
 
 
 const sqlDeleteCustomers = 'DELETE FROM customer_account WHERE id = ?';
