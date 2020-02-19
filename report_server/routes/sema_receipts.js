@@ -243,6 +243,7 @@ const insertReceipt = (receipt, query, params, res) => {
 								receipt.products[i].receiptId,
 								receipt.products[i].productId,
 								receipt.products[i].cogsTotal,
+								receipt.products[i].active,
 								receipt.products[i].notes,
 								receipt.products[i].emptiesReturned,
 								receipt.products[i].damagedBottles,
