@@ -16,22 +16,22 @@ const moment = require('moment');
 
 var sqlInsertReceipt = "INSERT INTO receipt " +
 	"(id, created_at, updated_at, currency_code, " +
-	"customer_account_id, amount_cash, amount_mobile, amount_loan,amount_bank,amount_cheque,amountjibuCredit,isWalkIn, amount_card, " +
+	"customer_account_id, amount_cash, amount_mobile, amount_loan,amount_bank,amount_cheque,amountjibuCredit, amount_card, isWalkIn, " +
 	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid, delivery )" +
 	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
 
 var sqlInsertReceiptActive = "INSERT INTO receipt " +
 	"(id, created_at, updated_at, currency_code, " +
-	"customer_account_id, amount_cash, amount_mobile, amount_loan,amount_bank,amount_cheque,amountjibuCredit,isWalkIn, amount_card, " +
-	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid, active, delivery)" +
+	"customer_account_id, amount_cash, amount_mobile, amount_loan,amount_bank,amount_cheque,amountjibuCredit, amount_card, isWalkIn, " +
+	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid, delivery, active)" +
 	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 var sqlInsertReceiptLineItem = "INSERT INTO receipt_line_item " +
-	"(created_at, updated_at, currency_code, price_total, quantity, receipt_id, product_id, cogs_total,notes) " +
+	"(created_at, updated_at, currency_code, price_total, quantity, receipt_id, product_id, cogs_total,notes, empties_returned, damaged_bottles, pending_bottles) " +
 	"VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)";
 
 var sqlInsertReceiptLineItemActive = "INSERT INTO receipt_line_item " +
-	"(created_at, updated_at, currency_code, price_total, quantity, receipt_id, product_id, cogs_total, active,notes) " +
+	"(created_at, updated_at, currency_code, price_total, quantity, receipt_id, product_id, cogs_total, active,notes, empties_returned, damaged_bottles, pending_bottles) " +
 	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 // Returns all receipts for the site and the date passed, except for those in `exceptionList`
@@ -194,9 +194,8 @@ router.post('/', async (req, res) => {
 
 			try {
 				let receipt = new Receipt(req.body);
-
 				let postSqlParams = [receipt.id, receipt.createdDate, receipt.updatedDate, receipt.currencyCode,
-				receipt.customerId, receipt.amountCash, receipt.amountMobile, receipt.amountLoan, receipt.amountCard,
+				receipt.customerId, receipt.amountCash, receipt.amountMobile, receipt.amountLoan, receipt.amount_bank, receipt.amount_cheque, receipt.amountjibuCredit, receipt.amountCard,
 				receipt.siteId, receipt.paymentType, receipt.salesChannelId, receipt.customerTypeId, receipt.total, receipt.cogs,
 				receipt.receiptId, receipt.delivery];
 
@@ -244,7 +243,11 @@ const insertReceipt = (receipt, query, params, res) => {
 								receipt.products[i].receiptId,
 								receipt.products[i].productId,
 								receipt.products[i].cogsTotal,
-								receipt.products[i].notes
+								receipt.products[i].notes,
+								receipt.products[i].emptiesReturned,
+								receipt.products[i].damagedBottles,
+								receipt.products[i].pendingBottles
+								
 							];
 
 							if ('active' in receipt.products[i]) {
