@@ -32,7 +32,7 @@ var sqlInsertReceiptLineItem = "INSERT INTO receipt_line_item " +
 
 var sqlInsertReceiptLineItemActive = "INSERT INTO receipt_line_item " +
 	"(created_at, updated_at, currency_code, price_total, quantity, receipt_id, product_id, cogs_total, active,notes, empties_returned, damaged_bottles, pending_bottles) " +
-	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?)";
+	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?)";
 
 // Returns all receipts for the site and the date passed, except for those in `exceptionList`
 const getReceipts = (siteId, exceptionList, date) => {
