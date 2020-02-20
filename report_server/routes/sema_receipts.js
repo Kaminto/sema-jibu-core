@@ -61,7 +61,7 @@ const getReceipts = (siteId, exceptionList, date) => {
 					include: [{
 						model: Product,
 						// we don't want the product image, too heavy. We'll take care of it client-side
-						attributes: { exclude: 'base64encoded_image' }
+// 						attributes: { exclude: 'base64encoded_image' }
 					}]
 				},
 				{
@@ -103,7 +103,7 @@ router.get('/:siteId', (req, res) => {
 				model: ReceiptLineItem,
 				include: [{
 					model: Product,
-					attributes: { exclude: 'base64encoded_image' }
+// 					attributes: { exclude: 'base64encoded_image' }
 				}]
 			}]
 	}).then(result => res.send(result));
