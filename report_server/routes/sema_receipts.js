@@ -17,14 +17,14 @@ const moment = require('moment');
 var sqlInsertReceipt = "INSERT INTO receipt " +
 	"(id, created_at, updated_at, currency_code, " +
 	"customer_account_id, amount_cash, amount_mobile, amount_loan,amount_bank,amount_cheque,amountjibuCredit, amount_card, isWalkIn, " +
-	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid, delivery )" +
-	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
+	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid, delivery, isDelete )" +
+	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
 
 var sqlInsertReceiptActive = "INSERT INTO receipt " +
 	"(id, created_at, updated_at, currency_code, " +
 	"customer_account_id, amount_cash, amount_mobile, amount_loan,amount_bank,amount_cheque,amountjibuCredit, amount_card, isWalkIn, " +
-	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid, delivery, active)" +
-	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid, delivery, isDelete, active)" +
+	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?)";
 
 var sqlInsertReceiptLineItem = "INSERT INTO receipt_line_item " +
 	"(created_at, updated_at, currency_code, price_total, quantity, receipt_id, product_id, cogs_total,notes, empties_returned, damaged_bottles, pending_bottles) " +
@@ -197,7 +197,7 @@ router.post('/', async (req, res) => {
 				let postSqlParams = [receipt.id, receipt.createdDate, receipt.updatedDate, receipt.currencyCode,
 				receipt.customerId, receipt.amountCash, receipt.amountMobile, receipt.amountLoan, receipt.amount_bank, receipt.amount_cheque, receipt.amountjibuCredit, receipt.amountCard, receipt.isWalkIn,
 				receipt.siteId, receipt.paymentType, receipt.salesChannelId, receipt.customerTypeId, receipt.total, receipt.cogs,
-				receipt.receiptId, receipt.delivery];
+				receipt.receiptId, receipt.delivery, receipt.isDelete];
 
 				if ('active' in req.body) {
 					postSqlParams.push(req.body.active);
