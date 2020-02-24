@@ -8,6 +8,11 @@ module.exports = function (sequelize, DataTypes) {
 			primaryKey: true,
 			autoIncrement: true
 		},
+		closingStockId: {
+			type: DataTypes.STRING(255),
+			allowNull: false,
+			unique: true
+		},
 		kiosk_id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
@@ -27,6 +32,11 @@ module.exports = function (sequelize, DataTypes) {
 		quantity: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
+		},
+		active: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			defaultValue: '1'
 		},
 		created_at: {
 			type: DataTypes.DATE,

@@ -16,6 +16,7 @@ class Product {
 		this._unitPerProduct = vals["unit_per_product"];
 		this._unitMeasure =vals["unit_measure"];
 		this._cogsAmount =vals["cogs_amount"];
+		this._wastage_name =vals["wastage_name"];
 	}
 
 	classToPlain() {
@@ -33,7 +34,8 @@ class Product {
 			updatedDate: this._updatedDate,
 			unitPerProduct:this._unitPerProduct,
 			unitMeasure:this._unitMeasure,
-			cogsAmount:this._cogsAmount
+			cogsAmount:this._cogsAmount,
+			wastageName: this._wastage_name
 		}
 	}
 

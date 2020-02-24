@@ -15,7 +15,23 @@ module.exports = function(sequelize, DataTypes) {
 		description: {
 			type: DataTypes.STRING,
 			allowNull: false,
-		},		
+		},	
+		region_id: {
+			type: DataTypes.BIGINT,
+			allowNull: false,
+			references: {
+				model: 'region',
+				key: 'id'
+			}
+		},
+		kiosk_id: {
+			type: DataTypes.BIGINT,
+			allowNull: false,
+			references: {
+				model: 'kiosk',
+				key: 'id'
+			}
+		},	
 		active: {
 			type: DataTypes.BOOLEAN,
 			allowNull: false,

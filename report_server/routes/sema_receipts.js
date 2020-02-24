@@ -6,6 +6,8 @@ const Receipt = require('../model_layer/Receipt');
 const R = require(`${__basedir}/models`).receipt;
 const CustomerAccount = require(`${__basedir}/models`).customer_account;
 const ReceiptLineItem = require(`${__basedir}/models`).receipt_line_item;
+const receipt_payment_type = require(`${__basedir}/models`).receipt_payment_type;
+const payment_type = require('../models').payment_type;
 const Product = require(`${__basedir}/models`).product;
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op
@@ -14,30 +16,31 @@ const moment = require('moment');
 
 var sqlInsertReceipt = "INSERT INTO receipt " +
 	"(id, created_at, updated_at, currency_code, " +
-	"customer_account_id, amount_cash, amount_mobile, amount_loan, isDelete,amount_card, " +
-	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid )" +
-	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-	
+	"customer_account_id, amount_cash, amount_mobile, amount_loan,amount_bank,amount_cheque,amountjibuCredit, amount_card, isWalkIn, " +
+	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid, delivery )" +
+	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
+
 var sqlInsertReceiptActive = "INSERT INTO receipt " +
 	"(id, created_at, updated_at, currency_code, " +
-	"customer_account_id, amount_cash, amount_mobile, amount_loan,isDelete, amount_card, " +
-	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid, active)" +
-	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	"customer_account_id, amount_cash, amount_mobile, amount_loan,amount_bank,amount_cheque,amountjibuCredit, amount_card, isWalkIn, " +
+	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid, delivery, active)" +
+	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 var sqlInsertReceiptLineItem = "INSERT INTO receipt_line_item " +
-	"(created_at, updated_at, currency_code, price_total, quantity, receipt_id, product_id, cogs_total, refillPending,emptiesDamaged,emptiesReturned) " +
-	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	"(created_at, updated_at, currency_code, price_total, quantity, receipt_id, product_id, cogs_total,notes, empties_returned, damaged_bottles, pending_bottles) " +
+	"VALUES (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?)";
 
 var sqlInsertReceiptLineItemActive = "INSERT INTO receipt_line_item " +
-"(created_at, updated_at, currency_code, price_total, quantity, receipt_id, product_id, cogs_total, refillPending,emptiesDamaged,emptiesReturned active) " +
-"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	"(created_at, updated_at, currency_code, price_total, quantity, receipt_id, product_id, cogs_total, active,notes, empties_returned, damaged_bottles, pending_bottles) " +
+	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?)";
 
 // Returns all receipts for the site and the date passed, except for those in `exceptionList`
 const getReceipts = (siteId, exceptionList, date) => {
 	R.belongsTo(CustomerAccount);
 	R.hasMany(ReceiptLineItem);
+	R.hasMany(receipt_payment_type);
 	ReceiptLineItem.belongsTo(Product);
-
+	receipt_payment_type.belongsTo(payment_type);
 	return new Promise(async (resolve, reject) => {
 		const [err, receipts] = await __hp(R.findAll({
 			where: {
@@ -58,9 +61,16 @@ const getReceipts = (siteId, exceptionList, date) => {
 					include: [{
 						model: Product,
 						// we don't want the product image, too heavy. We'll take care of it client-side
-						attributes: { exclude: 'base64encoded_image'}
-				}]
-				}]
+// 						attributes: { exclude: 'base64encoded_image' }
+					}]
+				},
+				{
+					model: receipt_payment_type,
+					include: [{
+						model: payment_type,
+					}]
+				}
+			]
 		}));
 
 		if (err) {
@@ -76,27 +86,27 @@ router.get('/:siteId', (req, res) => {
 	R.hasMany(ReceiptLineItem);
 	ReceiptLineItem.belongsTo(Product);
 
-	let id=req.params.siteId;
-	let date=req.query.date;
+	let id = req.params.siteId;
+	let date = req.query.date;
 	R.findAll({
-			where: {
-				kiosk_id: id,
-				created_at: {
-					gte: date
-				},
+		where: {
+			kiosk_id: id,
+			created_at: {
+				gte: date
 			},
-			include: [
-				{
-					model: CustomerAccount
-				},
-				{
-					model: ReceiptLineItem,
-					include: [{
-						model: Product,
-						attributes: { exclude: 'base64encoded_image'}
+		},
+		include: [
+			{
+				model: CustomerAccount
+			},
+			{
+				model: ReceiptLineItem,
+				include: [{
+					model: Product,
+// 					attributes: { exclude: 'base64encoded_image' }
 				}]
 			}]
-		}).then(result => res.send(result));
+	}).then(result => res.send(result));
 });
 
 router.put('/:siteId', async (req, res) => {
@@ -116,18 +126,18 @@ router.put('/:siteId', async (req, res) => {
 		return R.update({
 			active: receipt.active
 		}, {
+			where: {
+				id: receipt.id
+			}
+		}).then(() => {
+			return ReceiptLineItem.update({
+				active: receipt.active
+			}, {
 				where: {
-					id: receipt.id
+					receipt_id: receipt.id
 				}
-			}).then(() => {
-				return ReceiptLineItem.update({
-					active: receipt.active
-				}, {
-						where: {
-							receipt_id: receipt.id
-						}
-					})
 			})
+		})
 	});
 
 	await Promise.all(updatePromises);
@@ -143,7 +153,7 @@ router.put('/:siteId', async (req, res) => {
 	console.log(`Server sending ${newReceipts.length} extra receipts to client.`);
 
 	// On success, return a success message containing the data
-	return res.json({newReceipts});
+	return res.json({ newReceipts });
 });
 
 
@@ -175,7 +185,7 @@ router.post('/', async (req, res) => {
 			const products = req.body["products"];
 
 			for (let i = 0; i < products.length; i++) {
-				console.log(products[i].productId +" "+ products[i].quantity +" "+products[i].priceTotal+" "+products[i].cogsTotal)
+				console.log(products[i].productId + " " + products[i].quantity + " " + products[i].priceTotal + " " + products[i].cogsTotal)
 				if (!products[i].productId || !products[i].quantity || !products[i].priceTotal || !products[i].cogsTotal) {
 					semaLog.error("CREATE RECEIPT - Bad request, missing parts of product");
 					return res.status(400).send({ msg: "Bad request, missing parts of receipt.product." });
@@ -184,10 +194,10 @@ router.post('/', async (req, res) => {
 
 			try {
 				let receipt = new Receipt(req.body);
-
 				let postSqlParams = [receipt.id, receipt.createdDate, receipt.updatedDate, receipt.currencyCode,
-				receipt.customerId, receipt.amountCash, receipt.amountMobile, receipt.amountLoan, receipt.amountCard,
-				receipt.siteId, receipt.paymentType, receipt.salesChannelId, receipt.customerTypeId, receipt.total, receipt.cogs, receipt.receiptId];
+				receipt.customerId, receipt.amountCash, receipt.amountMobile, receipt.amountLoan, receipt.amount_bank, receipt.amount_cheque, receipt.amountjibuCredit, receipt.amountCard, receipt.isWalkIn,
+				receipt.siteId, receipt.paymentType, receipt.salesChannelId, receipt.customerTypeId, receipt.total, receipt.cogs,
+				receipt.receiptId, receipt.delivery];
 
 				if ('active' in req.body) {
 					postSqlParams.push(req.body.active);
@@ -233,9 +243,12 @@ const insertReceipt = (receipt, query, params, res) => {
 								receipt.products[i].receiptId,
 								receipt.products[i].productId,
 								receipt.products[i].cogsTotal,
-								receipt.products[i].refillPending,
-								receipt.products[i].emptiesDamaged,
-								receipt.products[i].emptiesReturned
+								receipt.products[i].active,
+								receipt.products[i].notes,
+								receipt.products[i].emptiesReturned,
+								receipt.products[i].damagedBottles,
+								receipt.products[i].pendingBottles
+								
 							];
 
 							if ('active' in receipt.products[i]) {
@@ -246,24 +259,24 @@ const insertReceipt = (receipt, query, params, res) => {
 							insertReceiptLineItem('active' in receipt.products[i] ?
 								sqlInsertReceiptLineItemActive :
 								sqlInsertReceiptLineItem, sqlProductParams, connection).then(function (result) {
-								semaLog.info("Inserted line item #" + resolveCount);
-								resolveCount++;
-								if (result) {
-									successCount++;
-								}
-
-								if (resolveCount == receipt.products.length) {
-									if (successCount == resolveCount) {
-										commitTransaction(receipt, connection, res);
-									} else {
-										connection.rollback(function () {
-											semaLog.error('insertReceipt- receipts - failed(2)', { err });
-											res.status(500).send("Error");
-											connection.release();
-										});
+									semaLog.info("Inserted line item #" + resolveCount);
+									resolveCount++;
+									if (result) {
+										successCount++;
 									}
-								}
-							})
+
+									if (resolveCount == receipt.products.length) {
+										if (successCount == resolveCount) {
+											commitTransaction(receipt, connection, res);
+										} else {
+											connection.rollback(function () {
+												semaLog.error('insertReceipt- receipts - failed(2)', { err });
+												res.status(500).send("Error");
+												connection.release();
+											});
+										}
+									}
+								})
 						}
 					}
 				}

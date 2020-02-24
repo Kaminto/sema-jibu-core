@@ -3,13 +3,21 @@ const Sequelize = require('sequelize');
 const router = express.Router();
 const semaLog = require(`${__basedir}/seama_services/sema_logger`);
 const region_promotion = require('../models').region_promotion;
-
+const promotion = require('../models').promotion;
 /* GET Region Promotion in the database. */
 router.get('/', function (req, res) {
     semaLog.info('Region Promotion - Enter');
-    region_promotion.findAndCountAll().then((regionPromotion, count) => {
-        res.status(200).json({ data: regionPromotion, total: count });
-    });
+    region_promotion.hasMany(promotion);
+    region_promotion.findAndCountAll(
+        {
+            include: [
+                {
+                    as: "promotion",
+                    model: promotion
+                }]
+        }).then((regionPromotion, count) => {
+            res.status(200).json({ data: regionPromotion, total: count });
+        });
 });
 
 router.post('/', function (req, res, next) {
