@@ -8,11 +8,23 @@ module.exports = function(sequelize, DataTypes) {
 			primaryKey: true,
 			autoIncrement: true
 		},
+		customer_debt_id: {
+			type: DataTypes.STRING(255),
+			allowNull: false
+		},
 		customer_account_id: {
 			type: DataTypes.STRING,
 			allowNull: false,
 			references: {
 				model: 'customer_account',
+				key: 'id'
+			}
+		},
+		kiosk_id: {
+			type: DataTypes.BIGINT,
+			allowNull: false,
+			references: {
+				model: 'kiosk',
 				key: 'id'
 			}
 		},

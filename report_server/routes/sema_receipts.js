@@ -14,23 +14,23 @@ const moment = require('moment');
 
 var sqlInsertReceipt = "INSERT INTO receipt " +
 	"(id, created_at, updated_at, currency_code, " +
-	"customer_account_id, amount_cash, amount_mobile, amount_loan, amount_card, " +
+	"customer_account_id, amount_cash, amount_mobile, amount_loan, isDelete,amount_card, " +
 	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid )" +
-	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
-
+	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	
 var sqlInsertReceiptActive = "INSERT INTO receipt " +
 	"(id, created_at, updated_at, currency_code, " +
-	"customer_account_id, amount_cash, amount_mobile, amount_loan, amount_card, " +
+	"customer_account_id, amount_cash, amount_mobile, amount_loan,isDelete, amount_card, " +
 	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid, active)" +
-	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 var sqlInsertReceiptLineItem = "INSERT INTO receipt_line_item " +
-	"(created_at, updated_at, currency_code, price_total, quantity, receipt_id, product_id, cogs_total) " +
-	"VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+	"(created_at, updated_at, currency_code, price_total, quantity, receipt_id, product_id, cogs_total, refillPending,emptiesDamaged,emptiesReturned) " +
+	"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 var sqlInsertReceiptLineItemActive = "INSERT INTO receipt_line_item " +
-"(created_at, updated_at, currency_code, price_total, quantity, receipt_id, product_id, cogs_total, active) " +
-"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+"(created_at, updated_at, currency_code, price_total, quantity, receipt_id, product_id, cogs_total, refillPending,emptiesDamaged,emptiesReturned active) " +
+"VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 // Returns all receipts for the site and the date passed, except for those in `exceptionList`
 const getReceipts = (siteId, exceptionList, date) => {
@@ -232,7 +232,10 @@ const insertReceipt = (receipt, query, params, res) => {
 								receipt.products[i].quantity,
 								receipt.products[i].receiptId,
 								receipt.products[i].productId,
-								receipt.products[i].cogsTotal
+								receipt.products[i].cogsTotal,
+								receipt.products[i].refillPending,
+								receipt.products[i].emptiesDamaged,
+								receipt.products[i].emptiesReturned
 							];
 
 							if ('active' in receipt.products[i]) {

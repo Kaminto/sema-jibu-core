@@ -185,7 +185,7 @@ class SalesReport extends Component {
 	};
 
 	updateReport(){
-		this.props.reportActions.GetSalesReportData( this.startDate, this.endDate);
+		//this.props.reportActions.GetSalesReportData( this.startDate, this.endDate);
 	}
 }
 

@@ -322,8 +322,6 @@ const getTopUps = (query, params, res) => {
     });
 };
 
-
-
 const getUTCDate = date => {
     return new Date(
         date.getUTCFullYear(),
