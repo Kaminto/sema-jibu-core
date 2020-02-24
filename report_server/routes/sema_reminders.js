@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const semaLog = require('../seama_services/sema_logger');
 const ReminderData = require('../model_layer/ReminderData');
+const ReminderModal = require('../models').customer_debt;
 const bodyParser = require('body-parser');
 const moment = require('moment');
 router.use(bodyParser.urlencoded({ extended: false }));
