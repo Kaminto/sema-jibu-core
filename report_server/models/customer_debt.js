@@ -8,6 +8,10 @@ module.exports = function(sequelize, DataTypes) {
 			primaryKey: true,
 			autoIncrement: true
 		},
+		customer_debt_id: {
+			type: DataTypes.STRING(255),
+			allowNull: false
+		},
 		customer_account_id: {
 			type: DataTypes.STRING,
 			allowNull: false,
@@ -16,14 +20,13 @@ module.exports = function(sequelize, DataTypes) {
 				key: 'id'
 			}
 		},
-		customer_debt_id: {
-			type: DataTypes.STRING,
+		kiosk_id: {
+			type: DataTypes.BIGINT,
 			allowNull: false,
-		},
-		active: {
-			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			defaultValue: '1'
+			references: {
+				model: 'kiosk',
+				key: 'id'
+			}
 		},
         due_amount: {
 			type: DataTypes.DECIMAL,
