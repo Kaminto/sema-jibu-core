@@ -244,7 +244,7 @@ const insertReceipt = (receipt, query, params, res) => {
 							let sqlProductParams = [
 								new Date(receipt.products[i].createdDate),
 								receipt.products[i].updatedDate,
-								receipt.products[i].currencyCode,
+								receipt.currencyCode,
 								receipt.products[i].priceTotal,
 								receipt.products[i].quantity,
 								receipt.products[i].receiptId,
