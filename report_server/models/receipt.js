@@ -147,6 +147,6 @@ module.exports = function(sequelize, DataTypes) {
 	}, {
 		tableName: 'receipt',
 		timestamps: false,
-		underscored: true
+		underscored: false
 	});
 };
