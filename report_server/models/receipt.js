@@ -69,7 +69,7 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.BIGINT,
 			allowNull: true
 		},
-		isDelete: {
+		is_delete: {
 			type: DataTypes.BIGINT,
 			allowNull: true
 		},
@@ -146,6 +146,7 @@ module.exports = function(sequelize, DataTypes) {
 		}
 	}, {
 		tableName: 'receipt',
-		timestamps: false
+		timestamps: false,
+		underscored: true
 	});
 };

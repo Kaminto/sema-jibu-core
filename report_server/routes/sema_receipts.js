@@ -17,13 +17,13 @@ const moment = require('moment');
 var sqlInsertReceipt = "INSERT INTO receipt " +
 	"(id, created_at, updated_at, currency_code, " +
 	"customer_account_id, amount_cash, amount_mobile, amount_loan,amount_bank,amount_cheque,amountjibuCredit, amount_card, isWalkIn, " +
-	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid, delivery, isDelete )" +
+	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid, delivery, is_delete )" +
 	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
 
 var sqlInsertReceiptActive = "INSERT INTO receipt " +
 	"(id, created_at, updated_at, currency_code, " +
 	"customer_account_id, amount_cash, amount_mobile, amount_loan,amount_bank,amount_cheque,amountjibuCredit, amount_card, isWalkIn, " +
-	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid, delivery, isDelete, active)" +
+	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid, delivery, is_delete, active)" +
 	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?)";
 
 var sqlInsertReceiptLineItem = "INSERT INTO receipt_line_item " +
@@ -197,12 +197,12 @@ router.post('/', async (req, res) => {
 				let postSqlParams = [
 					req.body.id, req.body.createdDate, req.body.updatedDate, req.body.currencyCode,
 					req.body.customerId, req.body.amountCash, req.body.amountMobile,
-					req.body.amountLoan, req.body.amount_bank, req.body.amount_cheque, 
+					req.body.amountLoan, req.body.amount_bank, req.body.amount_cheque,
 					req.body.amountjibuCredit, req.body.amountCard, req.body.isWalkIn,
-					req.body.siteId, req.body.paymentType, req.body.salesChannelId, 
+					req.body.siteId, req.body.paymentType, req.body.salesChannelId,
 					req.body.customerTypeId,
 					req.body.total, req.body.cogs,
-					req.body.receiptId, req.body.delivery, req.body.isDelete];
+					req.body.receiptId, req.body.delivery, req.body.is_delete];
 
 				if ('active' in req.body) {
 					postSqlParams.push(req.body.active);
@@ -253,7 +253,7 @@ const insertReceipt = (receipt, query, params, res) => {
 								receipt.products[i].emptiesReturned,
 								receipt.products[i].damagedBottles,
 								receipt.products[i].pendingBottles
-								
+
 							];
 
 							if ('active' in receipt.products[i]) {
