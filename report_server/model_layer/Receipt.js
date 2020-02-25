@@ -6,6 +6,7 @@ class Receipt {
 		this.updatedDate = this.createdDate;
 		this.currencyCode = jsonBody["currencyCode"];
 		this.customerId = jsonBody["customerId"];
+		this.isDelete = jsonBody["isDelete"]; 
 		if( jsonBody.hasOwnProperty("amountCash")) {
 			this.amountCash = jsonBody["amountCash"];
 		}else{
