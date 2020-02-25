@@ -247,7 +247,7 @@ const insertReceipt = (receipt, query, params, res) => {
 								receipt.currencyCode,
 								receipt.products[i].priceTotal,
 								receipt.products[i].quantity,
-								receipt.products[i].receiptId,
+								receipt.receiptId,
 								receipt.products[i].productId,
 								receipt.products[i].cogsTotal,
 								receipt.products[i].active,
