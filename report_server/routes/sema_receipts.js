@@ -195,7 +195,9 @@ router.post('/', async (req, res) => {
 			try {
 				//let receipt = new Receipt(req.body);
 				let postSqlParams = [
-					req.body.id, req.body.createdDate, req.body.updatedDate, req.body.currencyCode,
+					req.body.id,
+					new Date(req.body.createdDate),
+					req.body.updatedDate, req.body.currencyCode,
 					req.body.customerId, req.body.amountCash, req.body.amountMobile,
 					req.body.amountLoan, req.body.amount_bank, req.body.amount_cheque,
 					req.body.amountjibuCredit, req.body.amountCard, req.body.isWalkIn,
@@ -240,7 +242,7 @@ const insertReceipt = (receipt, query, params, res) => {
 						let resolveCount = 0;
 						for (let i = 0; i < receipt.products.length; i++) {
 							let sqlProductParams = [
-								receipt.products[i].createdDate,
+								new Date(receipt.products[i].createdDate),
 								receipt.products[i].updatedDate,
 								receipt.products[i].currencyCode,
 								receipt.products[i].priceTotal,
