@@ -20,7 +20,7 @@ module.exports = function(sequelize, DataTypes) {
 				model: 'customer_account',
 				key: 'id'
 			}
-		},		
+		},
 		topup: {
 			type: DataTypes.DECIMAL,
 			allowNull: false,

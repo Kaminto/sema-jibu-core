@@ -1,0 +1,10 @@
+{
+  apps : [
+    {
+      name      : "admin",
+      script    : "npx",
+      interpreter: "none",
+      args: "serve -p 2000 -T"
+    }
+  ]
+}

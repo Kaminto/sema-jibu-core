@@ -17,14 +17,14 @@ const moment = require('moment');
 var sqlInsertReceipt = "INSERT INTO receipt " +
 	"(id, created_at, updated_at, currency_code, " +
 	"customer_account_id, amount_cash, amount_mobile, amount_loan,amount_bank,amount_cheque,amountjibuCredit, amount_card, isWalkIn, " +
-	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid, delivery )" +
-	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
+	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid, delivery, is_delete )" +
+	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )";
 
 var sqlInsertReceiptActive = "INSERT INTO receipt " +
 	"(id, created_at, updated_at, currency_code, " +
 	"customer_account_id, amount_cash, amount_mobile, amount_loan,amount_bank,amount_cheque,amountjibuCredit, amount_card, isWalkIn, " +
-	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid, delivery, active)" +
-	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	"kiosk_id, payment_type, sales_channel_id, customer_type_id, total, cogs, uuid, delivery, is_delete, active)" +
+	"VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?)";
 
 var sqlInsertReceiptLineItem = "INSERT INTO receipt_line_item " +
 	"(created_at, updated_at, currency_code, price_total, quantity, receipt_id, product_id, cogs_total,notes, empties_returned, damaged_bottles, pending_bottles) " +
@@ -193,17 +193,24 @@ router.post('/', async (req, res) => {
 			}
 
 			try {
-				let receipt = new Receipt(req.body);
-				let postSqlParams = [receipt.id, receipt.createdDate, receipt.updatedDate, receipt.currencyCode,
-				receipt.customerId, receipt.amountCash, receipt.amountMobile, receipt.amountLoan, receipt.amount_bank, receipt.amount_cheque, receipt.amountjibuCredit, receipt.amountCard, receipt.isWalkIn,
-				receipt.siteId, receipt.paymentType, receipt.salesChannelId, receipt.customerTypeId, receipt.total, receipt.cogs,
-				receipt.receiptId, receipt.delivery];
+				//let receipt = new Receipt(req.body);
+				let postSqlParams = [
+					req.body.id,
+					new Date(req.body.createdDate),
+					req.body.updatedDate, req.body.currencyCode,
+					req.body.customerId, req.body.amountCash, req.body.amountMobile,
+					req.body.amountLoan, req.body.amount_bank, req.body.amount_cheque,
+					req.body.amountjibuCredit, req.body.amountCard, req.body.isWalkIn,
+					req.body.siteId, req.body.paymentType, req.body.salesChannelId,
+					req.body.customerTypeId,
+					req.body.total, req.body.cogs,
+					req.body.receiptId, req.body.delivery, req.body.is_delete];
 
 				if ('active' in req.body) {
 					postSqlParams.push(req.body.active);
 				}
 
-				insertReceipt(receipt, 'active' in req.body ? sqlInsertReceiptActive : sqlInsertReceipt, postSqlParams, res);
+				insertReceipt(req.body, 'active' in req.body ? sqlInsertReceiptActive : sqlInsertReceipt, postSqlParams, res);
 			} catch (err) {
 				semaLog.warn(`sema_receipts - Error: ${err}`);
 				return res.status(500).send({ msg: "Internal Server Error" });
@@ -235,12 +242,12 @@ const insertReceipt = (receipt, query, params, res) => {
 						let resolveCount = 0;
 						for (let i = 0; i < receipt.products.length; i++) {
 							let sqlProductParams = [
-								receipt.products[i].createdDate,
+								new Date(receipt.products[i].createdDate),
 								receipt.products[i].updatedDate,
-								receipt.products[i].currencyCode,
+								receipt.currencyCode,
 								receipt.products[i].priceTotal,
 								receipt.products[i].quantity,
-								receipt.products[i].receiptId,
+								receipt.receiptId,
 								receipt.products[i].productId,
 								receipt.products[i].cogsTotal,
 								receipt.products[i].active,
@@ -248,7 +255,7 @@ const insertReceipt = (receipt, query, params, res) => {
 								receipt.products[i].emptiesReturned,
 								receipt.products[i].damagedBottles,
 								receipt.products[i].pendingBottles
-								
+
 							];
 
 							if ('active' in receipt.products[i]) {

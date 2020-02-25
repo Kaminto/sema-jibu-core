@@ -37,8 +37,6 @@ router.get('/:kiosk_id', function (req, res) {
                 {
                     where: {
                         kiosk_id,
-                        start_date: { [Op.lte]: new Date() },
-                        end_date: { [Op.gte]: new Date() }
                     },
                     model: promotion
                 },]
