@@ -193,17 +193,22 @@ router.post('/', async (req, res) => {
 			}
 
 			try {
-				let receipt = new Receipt(req.body);
-				let postSqlParams = [receipt.id, receipt.createdDate, receipt.updatedDate, receipt.currencyCode,
-				receipt.customerId, receipt.amountCash, receipt.amountMobile, receipt.amountLoan, receipt.amount_bank, receipt.amount_cheque, receipt.amountjibuCredit, receipt.amountCard, receipt.isWalkIn,
-				receipt.siteId, receipt.paymentType, receipt.salesChannelId, receipt.customerTypeId, receipt.total, receipt.cogs,
-				receipt.receiptId, receipt.delivery, receipt.isDelete];
+				//let receipt = new Receipt(req.body);
+				let postSqlParams = [
+					req.body.id, req.body.createdDate, req.body.updatedDate, req.body.currencyCode,
+					req.body.customerId, req.body.amountCash, req.body.amountMobile,
+					req.body.amountLoan, req.body.amount_bank, req.body.amount_cheque, 
+					req.body.amountjibuCredit, req.body.amountCard, req.body.isWalkIn,
+					req.body.siteId, req.body.paymentType, req.body.salesChannelId, 
+					req.body.customerTypeId,
+					req.body.total, req.body.cogs,
+					req.body.receiptId, req.body.delivery, req.body.isDelete];
 
 				if ('active' in req.body) {
 					postSqlParams.push(req.body.active);
 				}
 
-				insertReceipt(receipt, 'active' in req.body ? sqlInsertReceiptActive : sqlInsertReceipt, postSqlParams, res);
+				insertReceipt(req.body, 'active' in req.body ? sqlInsertReceiptActive : sqlInsertReceipt, postSqlParams, res);
 			} catch (err) {
 				semaLog.warn(`sema_receipts - Error: ${err}`);
 				return res.status(500).send({ msg: "Internal Server Error" });
