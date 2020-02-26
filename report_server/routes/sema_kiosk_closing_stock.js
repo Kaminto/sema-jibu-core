@@ -33,13 +33,6 @@ const sqlUpdatedDate =
     'WHERE kiosk_id = ? ' +
     'AND updated_at > ?';
 
-const sqlAllTopsUpdatedDate =
-    'SELECT * ' +
-    'FROM kiosk_closing_stock ' +
-    'WHERE  updated_at > ?';
-
-
-///
 const sqlDeleteClosingStock = 'DELETE FROM kiosk_closing_stock WHERE closingStockId = ?';
 const sqlGetClosingStockById = 'SELECT * FROM kiosk_closing_stock WHERE closingStockId = ?';
 
@@ -99,8 +92,6 @@ router.put('/:closingStockId', async (req, res) => {
 });
 
 const updateClosingStock = (query, params, res) => {
-
-
     kioskClosingStockModal.sequelize.query(query, { replacements: params, type: Sequelize.QueryTypes.UPDATE }).then(result => {
         if (Array.isArray(result) && result.length >= 1) {
             semaLog.info('updateClosingStock - succeeded');
@@ -221,7 +212,6 @@ const insertClosingStock = (query, params, res) => {
 
 };
 
-
 router.get('/', function (req, res) {
     semaLog.info('GET Credits - Enter');
 
@@ -302,7 +292,6 @@ router.get('/', function (req, res) {
     });
 });
  
-
 const getClosingStock = (query, params, res) => {
     semaLog.info('GET getClosingStock - Enter');
 
@@ -322,8 +311,6 @@ const getClosingStock = (query, params, res) => {
         res.json({ closingStock: err });
     });
 };
-
-
 
 const getUTCDate = date => {
     return new Date(
