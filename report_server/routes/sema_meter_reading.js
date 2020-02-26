@@ -43,4 +43,24 @@ router.post('/', function (req, res, next) {
 	})
 });
 
+
+router.put('/:meter_reading_id', async (req, res) => {
+	semaLog.info('PUT customer_credit - Enter');
+	req.check('meter_reading_id', 'Parameter meter_reading_id is missing').exists();
+
+	req.getValidationResult().then(function (result) {
+		if (!result.isEmpty()) {
+			const errors = result.array().map(elem => {
+				return elem.msg;
+			});
+			semaLog.error('PUT Meter Reading, Validation error' + errors.toString());
+			res.status(400).send(errors.toString());
+		} else {
+			semaLog.info('ReceiptPaymentTypeId: ' + req.params.meter_reading_id);
+		
+		}
+	});
+});
+
+
 module.exports = router;
