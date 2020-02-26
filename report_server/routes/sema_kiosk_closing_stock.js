@@ -45,7 +45,7 @@ const sqlGetClosingStockById = 'SELECT * FROM kiosk_closing_stock WHERE closingS
 
 const sqlInsertClosingStock =
     'INSERT INTO kiosk_closing_stock ' +
-    '(closingStockId, created_at, kiosk_id, product_id, quantity, active ) ' +
+    '(closingStockId, created_at, kiosk_id, product_id, quantity, notDispatched , active ) ' +
     'VALUES (?, ?, ?, ?, ?, ?)';
 
 const sqlUpdateClosingStock =
@@ -198,6 +198,7 @@ router.post('/', async (req, res) => {
                 req.body.kiosk_id,
                 req.body.product_id,
                 req.body.quantity,
+                req.body.notDispatched,
                 1,
             ];
 

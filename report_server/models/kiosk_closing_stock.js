@@ -33,6 +33,10 @@ module.exports = function (sequelize, DataTypes) {
 			type: DataTypes.BIGINT,
 			allowNull: false,
 		},
+		notDispatched: {
+			type: DataTypes.BIGINT,
+			allowNull: false,
+		},
 		active: {
 			type: DataTypes.BOOLEAN,
 			allowNull: false,
@@ -51,7 +55,6 @@ module.exports = function (sequelize, DataTypes) {
 	}, {
 		tableName: 'kiosk_closing_stock',
 		timestamps: false,
-		underscored: true
 	});
 
 	return kiosk_closing_stock;
