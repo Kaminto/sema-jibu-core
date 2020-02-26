@@ -38,8 +38,8 @@ const sqlGetClosingStockById = 'SELECT * FROM kiosk_closing_stock WHERE closingS
 
 const sqlInsertClosingStock =
     'INSERT INTO kiosk_closing_stock ' +
-    '(closingStockId, created_at, kiosk_id, product_id, quantity, notDispatched , active ) ' +
-    'VALUES (?, ?, ?, ?, ?, ?)';
+    '(closingStockId, created_at, kiosk_id, product_id, quantity, notDispatched, active ) ' +
+    'VALUES (?, ?, ?, ?, ?, ?, ?)';
 
 const sqlUpdateClosingStock =
     'UPDATE kiosk_closing_stock ' +
@@ -92,6 +92,8 @@ router.put('/:closingStockId', async (req, res) => {
 });
 
 const updateClosingStock = (query, params, res) => {
+
+
     kioskClosingStockModal.sequelize.query(query, { replacements: params, type: Sequelize.QueryTypes.UPDATE }).then(result => {
         if (Array.isArray(result) && result.length >= 1) {
             semaLog.info('updateClosingStock - succeeded');
@@ -179,7 +181,7 @@ router.post('/', async (req, res) => {
                 return elem.msg;
             });
             semaLog.error(
-                'CREATE sema_customer: Validation error: ' + errors.toString()
+                'CREATE sema_closing stock: Validation error: ' + errors.toString()
             );
             res.status(400).send(errors.toString());
         } else {
@@ -211,6 +213,7 @@ const insertClosingStock = (query, params, res) => {
     });
 
 };
+
 
 router.get('/', function (req, res) {
     semaLog.info('GET Credits - Enter');
@@ -291,7 +294,8 @@ router.get('/', function (req, res) {
         }
     });
 });
- 
+
+
 const getClosingStock = (query, params, res) => {
     semaLog.info('GET getClosingStock - Enter');
 
@@ -311,6 +315,8 @@ const getClosingStock = (query, params, res) => {
         res.json({ closingStock: err });
     });
 };
+
+
 
 const getUTCDate = date => {
     return new Date(
