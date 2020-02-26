@@ -51,7 +51,6 @@ router.post('/', function (req, res, next) {
 	req.check('amount', 'Parameter amount is missing').exists();
 	req.check('receipt_payment_type_id', 'receipt_payment_type_id amount is missing').exists();
 
-
 	req.getValidationResult().then(function (result) {
 		if (!result.isEmpty()) {
 			const errors = result.array().map(elem => {

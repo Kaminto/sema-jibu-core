@@ -20,6 +20,10 @@ module.exports = function (sequelize, DataTypes) {
 			type: DataTypes.FLOAT,
 			allowNull: false,
 		},
+		meter_reading_id: {
+			type: DataTypes.STRING(255),
+			allowNull: false,
+		},
 		created_at: {
 			type: DataTypes.DATE,
 			allowNull: false,
