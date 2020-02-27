@@ -14,7 +14,7 @@ router.get('/:kiosk_id', function (req, res) {
 			kiosk_id: kiosk_id,
 		},
 	}).then(receiptPaymentType => {
-		res.send(receiptPaymentType)
+		res.send(receiptPaymentType);
 	}).catch(function (err) {
 		res.json({ error: err });
 	});
@@ -69,7 +69,7 @@ router.post('/', function (req, res, next) {
 			res.status(400).send(errors.toString());
 		} else {
 
-			receipt_payment_type.create({...req.body,active: 1}).then(result => {
+			receipt_payment_type.create({ ...req.body, active: 1 }).then(result => {
 				res.status(200).json(result);
 			})
 				.catch(Sequelize.ForeignKeyConstraintError, function handleError() {
@@ -166,13 +166,13 @@ router.put('/:receipt_payment_type_id', async (req, res) => {
 						req.body.payment_type_id ? req.body.payment_type_id : result.payment_type_id,
 					];
 
-					  // Active is set via a 'bit;
-					  if (!req.body.active ? req.body.active : result.active) {
-                        customerParams.push(0);
-                    } else {
-                        customerParams.push(1);
-                    }
-					
+					// Active is set via a 'bit;
+					if (!req.body.active ? req.body.active : result.active) {
+						customerParams.push(0);
+					} else {
+						customerParams.push(1);
+					}
+
 					receiptPaymentTypeParams.push(req.params.receipt_payment_type_id);
 					const sqlUpdateReceiptPaymentType =
 						'UPDATE receipt_payment_type ' +
