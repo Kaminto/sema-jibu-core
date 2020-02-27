@@ -115,7 +115,7 @@ router.put('/:id', async (req, res) => {
 						customer.gpsCoordinates,
 						customer.phoneNumber,
 						customer.frequency,
-						customer.reminder_date
+						new Date(customer.reminder_date)
 					];
 
 					// Active is set via a 'bit;
