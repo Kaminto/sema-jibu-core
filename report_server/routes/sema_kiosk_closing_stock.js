@@ -39,7 +39,7 @@ const sqlGetClosingStockById = 'SELECT * FROM kiosk_closing_stock WHERE closingS
 const sqlInsertClosingStock =
     'INSERT INTO kiosk_closing_stock ' +
     '(closingStockId, created_at, kiosk_id, product_id, quantity, notDispatched , active ) ' +
-    'VALUES (?, ?, ?, ?, ?, ?)';
+    'VALUES (?, ?, ?, ?, ?, ?, ?)';
 
 const sqlUpdateClosingStock =
     'UPDATE kiosk_closing_stock ' +
