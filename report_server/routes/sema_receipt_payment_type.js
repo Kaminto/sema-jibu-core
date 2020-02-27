@@ -16,7 +16,6 @@ router.get('/:kiosk_id', function (req, res) {
 	}).then(receiptPaymentType => {
 		res.send(receiptPaymentType)
 	}).catch(function (err) {
-		console.log("err", err);
 		res.json({ error: err });
 	});
 });
