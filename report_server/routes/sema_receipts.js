@@ -113,14 +113,13 @@ router.put('/:siteId', async (req, res) => {
 	// Gather data sent
 	const {
 		receipts,
-		exceptionList
 	} = req.body;
 	const {
 		date
 	} = req.query;
 	const { siteId } = req.params;
 
-	console.log(`Client has ${exceptionList.length}.`);
+//	console.log(`Client has ${exceptionList.length}.`);
 
 	let updatePromises = receipts.filter(receipt => receipt.updated).map(receipt => {
 		return R.update({
@@ -154,7 +153,7 @@ router.put('/:siteId', async (req, res) => {
 	console.log(`Server sending ${newReceipts.length} extra receipts to client.`);
 
 	// On success, return a success message containing the data
-	return res.json({ newReceipts });
+	return res.status(200).json({ newReceipts });
 });
 
 
