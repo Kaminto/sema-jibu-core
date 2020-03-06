@@ -113,14 +113,13 @@ router.put('/:siteId', async (req, res) => {
 	// Gather data sent
 	const {
 		receipts,
-		exceptionList
 	} = req.body;
 	const {
 		date
 	} = req.query;
 	const { siteId } = req.params;
 
-	console.log(`Client has ${exceptionList.length}.`);
+//	console.log(`Client has ${exceptionList.length}.`);
 
 	let updatePromises = receipts.filter(receipt => receipt.updated).map(receipt => {
 		return R.update({
