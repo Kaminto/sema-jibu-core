@@ -69,10 +69,6 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.BIGINT,
 			allowNull: true
 		},
-		is_delete: {
-			type: DataTypes.BIGINT,
-			allowNull: true
-		},
 		is_sponsor_selected: {
 			type: DataTypes.BOOLEAN,
 			allowNull: false,
