@@ -124,7 +124,8 @@ router.put('/:siteId', async (req, res) => {
 
 	let updatePromises = receipts.filter(receipt => receipt.updated).map(receipt => {
 		return R.update({
-			active: receipt.active
+			active: receipt.active,
+			is_delete: receipt.is_delete,
 		}, {
 			where: {
 				id: receipt.id
