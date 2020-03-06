@@ -155,7 +155,7 @@ router.put('/:siteId', async (req, res) => {
 	console.log(`Server sending ${newReceipts.length} extra receipts to client.`);
 
 	// On success, return a success message containing the data
-	return res.json({ newReceipts });
+	return res.status(200).json({ newReceipts });
 });
 
 
