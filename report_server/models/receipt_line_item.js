@@ -18,6 +18,10 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: false,
 			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
 		},
+		is_delete: {
+			type: DataTypes.BIGINT,
+			allowNull: true
+		},
 		currency_code: {
 			type: DataTypes.STRING(255),
 			allowNull: false

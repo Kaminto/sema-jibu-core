@@ -132,7 +132,8 @@ router.put('/:siteId', async (req, res) => {
 			}
 		}).then(() => {
 			return ReceiptLineItem.update({
-				active: receipt.active
+				active: receipt.active,
+				is_delete: receipt.is_delete,
 			}, {
 				where: {
 					receipt_id: receipt.id
