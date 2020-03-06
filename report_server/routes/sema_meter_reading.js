@@ -38,7 +38,7 @@ router.post('/', function (req, res, next) {
 			);
 			res.status(400).send(errors.toString());
 		} else {
-			receipt_payment_type.create({ ...req.body, active: 1 }).then(result => {
+			meterReadingModal.create({ ...req.body, active: 1 }).then(result => {
 				res.status(200).json(result);
 			})
 				.catch(Sequelize.ForeignKeyConstraintError, function handleError() {
