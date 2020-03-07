@@ -61,7 +61,7 @@ const getReceipts = (siteId, exceptionList, date) => {
 					include: [{
 						model: Product,
 						// we don't want the product image, too heavy. We'll take care of it client-side
-// 						attributes: { exclude: 'base64encoded_image' }
+						// 						attributes: { exclude: 'base64encoded_image' }
 					}]
 				},
 				{
@@ -103,13 +103,13 @@ router.get('/:siteId', (req, res) => {
 				model: ReceiptLineItem,
 				include: [{
 					model: Product,
-// 					attributes: { exclude: 'base64encoded_image' }
+					// 					attributes: { exclude: 'base64encoded_image' }
 				}]
 			}]
 	}).then(result => res.send(result));
 });
 
-router.put('/:siteId', async (req, res) => {
+router.put('/:siteId/:errr', async (req, res) => {
 	// Gather data sent
 	const {
 		receipts,
@@ -119,7 +119,7 @@ router.put('/:siteId', async (req, res) => {
 	} = req.query;
 	const { siteId } = req.params;
 
-//	console.log(`Client has ${exceptionList.length}.`);
+	//	console.log(`Client has ${exceptionList.length}.`);
 
 	let updatePromises = receipts.filter(receipt => receipt.updated).map(receipt => {
 		return R.update({
@@ -156,6 +156,33 @@ router.put('/:siteId', async (req, res) => {
 	return res.status(200).json({ newReceipts });
 });
 
+
+router.put('/:siteId', async (req, res) => {
+	// Gather data sent
+	return R.update({
+		active: req.body.active,
+		is_delete: req.body.is_delete,
+	}, {
+		where: {
+			id: req.body.id
+		}
+	}).then(() => {
+		ReceiptLineItem.update({
+			active: req.body.active
+		}, {
+			where: {
+				receipt_id: req.body.id
+			}
+		}).then(() => {
+
+			return res.status(200).json({ message: 'Update Successfull' });
+		}).catch(() => {
+			res.status(400).json({ message: 'Update failed on  reciept line update' });
+		})
+	}).catch(() => {
+		return res.status(400).json({ message: 'Update failed on  reciept' });
+	})
+});
 
 router.post('/', async (req, res) => {
 	semaLog.info('CREATE RECEIPT sema_receipts- Enter');
