@@ -41,8 +41,10 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.DECIMAL,
 			allowNull: true
 		},
-
-
+		is_delete: {
+			type: DataTypes.BIGINT,
+			allowNull: true
+		},
 
 		// amount_bank: {
 		// 	type: DataTypes.DECIMAL,
