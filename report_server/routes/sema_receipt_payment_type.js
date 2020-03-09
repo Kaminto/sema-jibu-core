@@ -6,12 +6,15 @@ const receipt_payment_type = require('../models').receipt_payment_type;
 const receipt = require('../models').receipt;
 
 /* GET Payment Type Credit in the database. */
-router.get('/:kiosk_id', function (req, res) {
+router.get('/:kiosk_id/:date', function (req, res) {
 	semaLog.info('Payment Type - Enter');
 	let kiosk_id = req.params.kiosk_id;
 	receipt_payment_type.findAll({
 		where: {
 			kiosk_id: kiosk_id,
+			created_at: {
+				gte: req.params.date
+			},
 		},
 	}).then(receiptPaymentType => {
 		res.send(receiptPaymentType);
@@ -68,7 +71,6 @@ router.post('/', function (req, res, next) {
 			);
 			res.status(400).send(errors.toString());
 		} else {
-
 			receipt_payment_type.create({ ...req.body, active: 1 }).then(result => {
 				res.status(200).json(result);
 			})

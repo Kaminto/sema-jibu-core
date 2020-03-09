@@ -167,7 +167,7 @@ router.put('/:siteId', async (req, res) => {
 			id: req.body.id
 		}
 	}).then(() => {
-		ReceiptLineItem.update({
+		return ReceiptLineItem.update({
 			active: req.body.active
 		}, {
 			where: {

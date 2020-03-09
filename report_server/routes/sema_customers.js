@@ -84,6 +84,65 @@ const sqlUpdateCustomers =
 	'phone_number = ?,frequency = ?, reminder_date=?,active = ? ' +
 	'WHERE id = ?';
 
+router.put('/:id/:ee', async (req, res) => {
+	semaLog.info('PUT sema_customer - Enter');
+	req.check('id', 'Parameter id is missing').exists();
+
+	req.getValidationResult().then(function(result) {
+		if (!result.isEmpty()) {
+			const errors = result.array().map(elem => {
+				return elem.msg;
+			});
+			semaLog.error('PUT customer, Validation error' + errors.toString());
+			res.status(400).send(errors.toString());
+		} else {
+			semaLog.info('CustomerId: ' + req.params.id);
+			findCustomers(sqlGetCustomerById, req.params.id).then(
+				function(result) {
+					let customer = new Customer();
+					customer.databaseToClass(result[0]);
+					customer.updateClass(req.body);
+
+					// Note - Don't set the updated date... JIRA XXXX
+					// let customerParams = [ customer.name, customer.salesChannelId, customer.customerTypeId,
+					// customer.dueAmount, customer.address, customer.gpsCoordinates, customer.phoneNumber ];
+					let customerParams = [
+						customer.name,
+						customer.salesChannelId,
+						customer.customerTypeId,
+						customer.dueAmount,
+						customer.address,
+						customer.gpsCoordinates,
+						customer.phoneNumber,
+						customer.frequency,
+						new Date(customer.reminder_date)
+					];
+
+					// Active is set via a 'bit;
+					if (!customer.active) {
+						customerParams.push(0);
+					} else {
+						customerParams.push(1);
+					}
+					customerParams.push(customer.customerId);
+					updateCustomers(
+						sqlUpdateCustomers,
+						customerParams,
+						res,
+						customer
+					);
+				},
+				function(reason) {
+					res.status(404).send(
+						'PUT customer: Could not find customer with id ' +
+							req.params.id
+					);
+				}
+			);
+		}
+	});
+});
+
 router.put('/:id', async (req, res) => {
 	semaLog.info('PUT sema_customer - Enter');
 	req.check('id', 'Parameter id is missing').exists();
