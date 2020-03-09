@@ -13,6 +13,7 @@ class Product {
 		this._priceCurrency = vals["price_currency"];
 		this._sku = vals["sku"];
 		this._updatedDate = vals["updated_at"];
+		this._createdDate = vals["created_at"];
 		this._unitPerProduct = vals["unit_per_product"];
 		this._unitMeasure =vals["unit_measure"];
 		this._cogsAmount =vals["cogs_amount"];
@@ -31,7 +32,8 @@ class Product {
 			priceAmount: this._priceAmount,
 			priceCurrency: this._priceCurrency,
 			sku: this._sku,
-			updatedDate: this._updatedDate,
+			updated_at: this._updatedDate,
+			created_at: this._createdDate,
 			unitPerProduct:this._unitPerProduct,
 			unitMeasure:this._unitMeasure,
 			cogsAmount:this._cogsAmount,
