@@ -9,6 +9,7 @@ const ReceiptLineItem = require(`${__basedir}/models`).receipt_line_item;
 const receipt_payment_type = require(`${__basedir}/models`).receipt_payment_type;
 const payment_type = require('../models').payment_type;
 const Product = require(`${__basedir}/models`).product;
+const db = require('../models')
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op
 const validator = require('validator');
@@ -187,19 +188,99 @@ router.put('/:siteId', async (req, res) => {
 router.post('/', async (req, res) => {
 	semaLog.info('CREATE RECEIPT sema_receipts- Enter');
 	req.check("id", "id is missing").exists();
-	req.check("currencyCode", "currencyCode is missing").exists();
-	req.check("customerId", "customerId is missing").exists();
-	req.check("createdDate", "createdDate is missing").exists();
-	req.check("siteId", "siteId is missing").exists();
-	req.check("paymentType", "paymentType is missing").exists();
-	req.check("salesChannelId", "salesChannelId is missing").exists();
-	req.check("customerTypeId", "customerTypeId is missing").exists();
+	req.check("currency_code", "currency_code is missing").exists();
+	// req.check("customerId", "customerId is missing").exists();
+	// req.check("createdDate", "createdDate is missing").exists();
+	// req.check("siteId", "siteId is missing").exists();
+	req.check("payment_type", "payment_type is missing").exists();
+	req.check("sales_channel_id", "sales_channel_id is missing").exists();
+	req.check("sales_channel_id", "sales_channel_id is missing").exists();
+	req.check("total", "totalSales is missing").exists();
+	req.check("cogs", "cogs is missing").exists();
+	req.check("receiptId", "receiptId is missing").exists();
+	req.check("products", "products is missing").exists();
+	console.log('body', JSON.stringify(req.body));
+	req.getValidationResult().then(function (result) {
+		if (!result.isEmpty()) {
+			const errors = result.array().map((elem) => {
+				return elem.msg;
+			});
+			semaLog.error("Validation error: " + errors.toString());
+			res.status(400).send(errors.toString());
+		} else {
+			const products = req.body["products"];
+
+			if (products.length === 0) {
+				return res.status(400).send({ msg: "Bad request, missing Order Items." });
+			}
+
+			for (let i = 0; i < products.length; i++) {
+				if (!products[i].productId || !products[i].quantity || !products[i].priceTotal || !products[i].cogsTotal) {
+					semaLog.error("CREATE RECEIPT - Bad request, missing parts of product");
+					return res.status(400).send({ msg: "Bad request, missing parts of receipt.product." });
+				}
+			}
+ 
+		//	db.sequelize.transaction(transaction => {
+				return R.create({ ...req.body, active: 1, customer_account_id: req.body.customer_account.customerId }).then(result => {
+
+					var orderItems = [];
+					for (let i = 0; i < req.body.products.length; i++) {
+						orderItems.push({
+							created_at: req.body.products[i].created_at,
+							updated_at: req.body.products[i].updated_at,
+							currency_code: req.body.currency_code,
+							price_total: req.body.products[i].priceTotal,
+							quantity: req.body.products[i].quantity,
+							receipt_id: req.body.receiptId,
+							product_id: req.body.products[i].productId,
+							cogs_total: req.body.products[i].cogsTotal,
+							active: 1,
+							notes: req.body.products[i].notes,
+							empties_returned: req.body.products[i].emptiesReturned,
+							damaged_bottles: req.body.products[i].damagedBottles ? req.body.products[i].damagedBottles : 0,
+							pending_bottles: req.body.products[i].pendingBottles
+						})
+					}
+
+
+					ReceiptLineItem.bulkCreate(orderItems).then(result => {
+						res.status(200).json(result);
+					})
+						.catch((err) =>{
+							console.log('err', err);
+							res.status(400).json({ message: 'Invalid Assignment Error' });
+						})
+
+				})
+					.catch((err)=> {
+						console.log('err2', err);
+						res.status(400).json({ message: 'Invalid Assignment Error' });
+					})
+
+			//})
+
+		}
+	});
+});
+
+router.post('/fd', async (req, res) => {
+	semaLog.info('CREATE RECEIPT sema_receipts- Enter');
+	req.check("id", "id is missing").exists();
+	req.check("currency_code", "currency_code is missing").exists();
+	// req.check("customerId", "customerId is missing").exists();
+	// req.check("createdDate", "createdDate is missing").exists();
+	// req.check("siteId", "siteId is missing").exists();
+	req.check("payment_type", "payment_type is missing").exists();
+	req.check("sales_channel_id", "sales_channel_id is missing").exists();
+	req.check("sales_channel_id", "sales_channel_id is missing").exists();
 	req.check("total", "totalSales is missing").exists();
 	req.check("cogs", "cogs is missing").exists();
 	req.check("receiptId", "receiptId is missing").exists();
 	req.check("products", "products is missing").exists();
 
-	console.log(JSON.stringify(req.body));
+	console.log('Here in reciepts');
+	console.log('body', JSON.stringify(req.body));
 
 	req.getValidationResult().then(function (result) {
 		if (!result.isEmpty()) {
@@ -211,8 +292,11 @@ router.post('/', async (req, res) => {
 		} else {
 			const products = req.body["products"];
 
+			if (products.length === 0) {
+				return res.status(400).send({ msg: "Bad request, missing Order Items." });
+			}
+
 			for (let i = 0; i < products.length; i++) {
-				console.log(products[i].productId + " " + products[i].quantity + " " + products[i].priceTotal + " " + products[i].cogsTotal)
 				if (!products[i].productId || !products[i].quantity || !products[i].priceTotal || !products[i].cogsTotal) {
 					semaLog.error("CREATE RECEIPT - Bad request, missing parts of product");
 					return res.status(400).send({ msg: "Bad request, missing parts of receipt.product." });
@@ -223,13 +307,13 @@ router.post('/', async (req, res) => {
 				//let receipt = new Receipt(req.body);
 				let postSqlParams = [
 					req.body.id,
-					new Date(req.body.createdDate),
-					req.body.updatedDate, req.body.currencyCode,
-					req.body.customerId, req.body.amountCash, req.body.amountMobile,
+					new Date(req.body.created_at),
+					req.body.updatedDate, req.body.currency_code,
+					req.body.customer_account.customerId, req.body.amountCash, req.body.amountMobile,
 					req.body.amountLoan, req.body.amount_bank, req.body.amount_cheque,
 					req.body.amountjibuCredit, req.body.amountCard, req.body.isWalkIn,
-					req.body.siteId, req.body.paymentType, req.body.salesChannelId,
-					req.body.customerTypeId,
+					req.body.kiosk_id, req.body.payment_type, req.body.sales_channel_id,
+					req.body.customer_type_id,
 					req.body.total, req.body.cogs,
 					req.body.receiptId, req.body.delivery, req.body.is_delete];
 
@@ -269,9 +353,9 @@ const insertReceipt = (receipt, query, params, res) => {
 						let resolveCount = 0;
 						for (let i = 0; i < receipt.products.length; i++) {
 							let sqlProductParams = [
-								new Date(receipt.products[i].createdDate),
+								new Date(receipt.products[i].created_at),
 								receipt.products[i].updatedDate,
-								receipt.currencyCode,
+								receipt.currency_code,
 								receipt.products[i].priceTotal,
 								receipt.products[i].quantity,
 								receipt.receiptId,
@@ -280,7 +364,7 @@ const insertReceipt = (receipt, query, params, res) => {
 								receipt.products[i].active,
 								receipt.products[i].notes,
 								receipt.products[i].emptiesReturned,
-								receipt.products[i].damagedBottles,
+								receipt.products[i].damagedBottles ? receipt.products[i].damagedBottles : 0,
 								receipt.products[i].pendingBottles
 
 							];
@@ -288,7 +372,7 @@ const insertReceipt = (receipt, query, params, res) => {
 							if ('active' in receipt.products[i]) {
 								sqlProductParams.push(receipt.products[i].active)
 							}
-
+							console.log('sqlProductParams', sqlProductParams)
 							semaLog.info("Inserting line item #" + i);
 							insertReceiptLineItem('active' in receipt.products[i] ?
 								sqlInsertReceiptLineItemActive :

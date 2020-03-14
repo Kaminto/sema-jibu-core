@@ -1,0 +1,18 @@
+.settingsItem {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    font-size: 17px;
+}
+
+.settingsDetails {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.settingsDescription {
+    font-size: 70%;
+    color: grey;
+    font-style: italic
+}

@@ -71,11 +71,11 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.BIGINT,
 			allowNull: true
 		},
-		is_sponsor_selected: {
-			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			defaultValue: '0'
-		},
+		// is_sponsor_selected: {
+		// 	type: DataTypes.BOOLEAN,
+		// 	allowNull: false,
+		// 	defaultValue: '0'
+		// },
 		kiosk_id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
@@ -112,19 +112,19 @@ module.exports = function(sequelize, DataTypes) {
 				key: 'id'
 			}
 		},
-		sponsor_id: {
-			type: DataTypes.STRING(255),
-			allowNull: true,
-			references: {
-				model: 'sponsor',
-				key: 'id'
-			}
-		},
-		sponsor_amount: {
-			type: DataTypes.DECIMAL,
-			allowNull: false,
-			defaultValue: '0.00'
-		},
+		// sponsor_id: {
+		// 	type: DataTypes.STRING(255),
+		// 	allowNull: true,
+		// 	references: {
+		// 		model: 'sponsor',
+		// 		key: 'id'
+		// 	}
+		// },
+		// sponsor_amount: {
+		// 	type: DataTypes.DECIMAL,
+		// 	allowNull: false,
+		// 	defaultValue: '0.00'
+		// },
 		total: {
 			type: DataTypes.DECIMAL,
 			allowNull: false

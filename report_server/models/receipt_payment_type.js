@@ -52,7 +52,7 @@ module.exports = function (sequelize, DataTypes) {
 		},
 		updated_at: {
 			type: DataTypes.DATE,
-			allowNull: false,
+			allowNull: true,
 			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
 		},
 	}, {

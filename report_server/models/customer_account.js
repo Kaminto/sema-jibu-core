@@ -1,7 +1,7 @@
 /* jshint indent: 1 */
 
 module.exports = function (sequelize, DataTypes) {
-	return sequelize.define('customer_account', {
+	const customer =  sequelize.define('customer_account', {
 		id: {
 			type: DataTypes.STRING(255),
 			allowNull: false,
@@ -51,6 +51,10 @@ module.exports = function (sequelize, DataTypes) {
 			}
 		},
 		due_amount: {
+			type: DataTypes.DECIMAL,
+			allowNull: true
+		},
+		wallet_balance: {
 			type: DataTypes.DECIMAL,
 			allowNull: true
 		},
@@ -114,6 +118,10 @@ module.exports = function (sequelize, DataTypes) {
 			type: DataTypes.STRING(255),
 			allowNull: true
 		},
+		is_delete: {
+			type: DataTypes.BIGINT,
+			allowNull: true
+		},
 		distance: {
 			type: DataTypes.INTEGER(11),
 			allowNull: true
@@ -131,4 +139,6 @@ module.exports = function (sequelize, DataTypes) {
 		timestamps: false,
 		underscored: true
 	});
+
+	return customer;
 };
