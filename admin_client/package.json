@@ -32,14 +32,14 @@
     "redux-thunk": "^2.2.0"
   },
   "scripts": {
-    "start": "PORT=3007 react-scripts start",
+    "start": "react-scripts start",
     "build": "NODE_ENV=production react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "postinstall": "./update_theme.sh",
     "lint": "eslint ./src/**/*.js ./src/**/*.jsx"
   },
-  "proxy": "http://142.93.115.206:3006",
+  "proxy": "http://142.93.115.206:3002",
   "devDependencies": {
     "eslint": "4.19.1",
     "eslint-config-airbnb": "^17.1.0",

@@ -185,9 +185,6 @@ const deleteTopUp = (query, params, res) => {
 
 router.post('/', async (req, res) => {
     semaLog.info('CREATE sema_customer - Enter');
-
-    //var postSqlParams = [];
-
     semaLog.info(req.body);
     req.check('topUpId', 'Parameter topUpId is missing').exists();
     req.check('customer_account_id', 'Parameter customer_account_id is missing').exists();
@@ -204,18 +201,14 @@ router.post('/', async (req, res) => {
             res.status(400).send(errors.toString());
         } else {
 
+            customerCreditModel.create({ ...req.body, active: 1, created_at: req.body.created_at }).then(result => {
+                res.status(200).json(result);
+            })
+                .catch((err) => {
+                    console.log('err', err)
+                    res.status(400).json({ message: 'Invalid Assignment Error' });
+                });
 
-            let postSqlParams = [
-                req.body.topUpId,
-                getUTCDate(new Date()),
-                req.body.customer_account_id,
-                req.body.topup,
-                req.body.balance,
-                1,
-            ];
-
-
-            insertTopUp(sqlInsertTopUp, postSqlParams, res);
         }
     });
 });
@@ -235,9 +228,10 @@ const insertTopUp = (query, params, res) => {
 };
 
 
-router.get('/', function (req, res) {
+router.get('/:kiosk_id/:date', function (req, res) {
     semaLog.info('GET Credits - Enter');
-
+    let kiosk_id = req.params.kiosk_id;
+    let date = req.params.date;
 
     req.getValidationResult().then(function (result) {
         if (!result.isEmpty()) {
@@ -247,74 +241,25 @@ router.get('/', function (req, res) {
             semaLog.error('GET Credits validation error: ', errors);
             res.status(400).send(errors.toString());
         } else {
-            semaLog.info('Customer_account_id: ' + req.query['customer_account_id']);
-            if (req.query.hasOwnProperty('updated-date')) {
-                let updatedDate = getUTCDate(
-                    new Date(req.query['updated-date'])
-                );
 
-                if (!isNaN(updatedDate)) {
-                    getTopUps(
-                        sqlUpdatedDate,
-                        [req.query['customer_account_id'], updatedDate],
-                        res
-                    );
-                } else {
-                    semaLog.error('GET Credits - Invalid updatedDate');
-                    res.status(400).send('Invalid Date');
+            customerCreditModel.findAll({
+                where: {
+                    kiosk_id: kiosk_id,
+                    created_at: {
+                        gte: date
+                    },
                 }
-            } else if (
-                req.query.hasOwnProperty('begin-date') &&
-                req.query.hasOwnProperty('end-date')
-            ) {
-                let beginDate = getUTCDate(new Date(req.query['begin-date']));
-                let endDate = getUTCDate(new Date(req.query['end-date']));
-                if (!isNaN(beginDate) && !isNaN(endDate)) {
-                    getTopUps(
-                        sqlBeginEndDate,
-                        [req.query['customer_account_id'], beginDate, endDate],
-                        res
-                    );
-                } else {
-                    semaLog.error(
-                        'GET Credits - Invalid begin-date/end-date'
-                    );
-                    res.status(400).send('Invalid Date');
-                }
-            } else if (req.query.hasOwnProperty('begin-date')) {
-                let beginDate = getUTCDate(new Date(req.query['begin-date']));
-                semaLog.info(
-                    'GET Credits - beginDate: ' + beginDate.toISOString()
-                );
-                if (!isNaN(beginDate)) {
-                    getTopUps(
-                        sqlBeginDateOnly,
-                        [req.query['customer_account_id'], beginDate],
-                        res
-                    );
-                } else {
-                    semaLog.error('GET Credits - Invalid begin-date');
-                    res.status(400).send('Invalid Date');
-                }
-            } else if (req.query.hasOwnProperty('end-date')) {
-                let endDate = getUTCDate(new Date(req.query['end-date']));
-                if (!isNaN(endDate)) {
-                    getTopUps(
-                        sqlEndDateOnly,
-                        [req.query['customer_account_id'], endDate],
-                        res
-                    );
-                } else {
-                    semaLog.error('GET Credits - Invalid end-date');
-                    res.status(400).send('Invalid Date');
-                }
-            } else {
-                getTopUps(sqlSiteIdOnly, [req.query['customer_account_id']], res);
-            }
+            }).then(topup => {
+                res.status(200).json({ topup: topup });
+            })
+                .catch(function (err) {
+                    console.log("err", err);
+                    res.status(400).json({ error: err });
+                });
+
         }
     });
 });
-
 
 router.get('/allTopUps', function (req, res) {
     semaLog.info('GET allTopUps - Enter');

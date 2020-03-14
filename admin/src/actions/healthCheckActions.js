@@ -1,4 +1,4 @@
-import { RECEIVE_HEALTHCHECK } from 'actions';
+import { RECEIVE_HEALTHCHECK } from './ActionTypes';
 import { axiosService } from 'services';
 
 const receiveHealthCheck = data => {

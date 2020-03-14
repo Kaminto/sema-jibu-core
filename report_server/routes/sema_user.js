@@ -33,7 +33,7 @@ router.post('/', async (req, res) => {
 		firstName,
 		lastName,
 		role
-	} = req.body.data;
+	} = req.body;
 	let assignedRoles;
 	try {
 		const user = await db.user.findOne({
