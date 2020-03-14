@@ -5,12 +5,16 @@ const semaLog = require(`${__basedir}/seama_services/sema_logger`);
 const meterReadingModal = require('../models').meter_reading;
 
 /* GET Meter Reading in the database. */
-router.get('/:kiosk_id', (req, res, next) => {
+router.get('/:kiosk_id/:date', (req, res, next) => {
 	semaLog.info('GET Meter Reading - Enter');
 	let kiosk_id = req.params.kiosk_id;
+	let date = req.params.date;
 	meterReadingModal.findAll({
 		where: {
 			kiosk_id: kiosk_id,
+			created_at: {
+				gte: date
+			},
 		}
 	}).then(meterReading => {
 		res.send(meterReading);
@@ -63,7 +67,13 @@ router.put('/:meter_reading_id', async (req, res) => {
 			res.status(400).send(errors.toString());
 		} else {
 			semaLog.info('ReceiptPaymentTypeId: ' + req.params.meter_reading_id);
-
+			semaLog.info('body: ', req.body);
+            meterReadingModal.update(req.body, { where: { meter_reading_id: req.params.meter_reading_id } }).then(result => {
+                res.status(200).json(result);
+            })
+                .catch((err) => {
+                    res.status(400).json({ message: 'Invalid Assignment Error' });
+                });
 		}
 	});
 });

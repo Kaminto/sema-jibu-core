@@ -1,6 +1,6 @@
 {
   "name": "bootstrap_react",
-  "version": "0.0.2.5",
+  "version": "0.0.1",
   "private": true,
   "dependencies": {
     "axios": "^0.18.0",
@@ -25,11 +25,11 @@
     "rc-progress":"~2.2.5"
   },
   "scripts": {
-    "start": "PORT=2000 react-scripts start",
+    "start": "react-scripts start",
     "build": "NODE_ENV=production react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "postinstall": "./update_theme.sh"
   },
-  "proxy": "http://localhost:3002"
+  "proxy": "http://142.93.115.206:3002/"
 }

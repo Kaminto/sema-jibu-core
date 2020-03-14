@@ -10,7 +10,7 @@ import {
 	customerActions,
 	salesActions,
 	waterOperationsActions
-} from 'actions';
+} from './actions';
 import { history } from './utils';
 import {
 	Router

@@ -5,7 +5,7 @@ import configureStore from 'store/configureStore';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.css';
 //import 'bootstrap/dist/css/bootstrap-theme.css';
-import 'bootstrap/dist/css/bootstrap_cerulean.min.css';
+import 'bootstrap/dist/css/bootstrap_cerulean.min.css'; 
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import { PersistGate } from 'redux-persist/integration/react';

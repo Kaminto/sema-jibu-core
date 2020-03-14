@@ -3,11 +3,11 @@ import './App.css';
 import './css/SeamaNav.css';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { authActions } from 'actions';
+import { authActions } from './actions';
 import { Router } from 'react-router-dom';
 import { Page, SemaLogin } from 'components';
 import { history } from './utils';
-
+ 
 class App extends Component {
   userIsValid() {
     if (this.props.auth.currentUser) {
