@@ -42,6 +42,7 @@ router.put('/:closingStockId', async (req, res) => {
         } else {
             semaLog.info('ClosingStockId: ' + req.params.closingStockId);
             semaLog.info('body: ', req.body);
+            delete req.body.id;
             kioskClosingStockModal.update(req.body, { where: { closingStockId: req.params.closingStockId } }).then(result => {
                 res.status(200).json(result);
             })
