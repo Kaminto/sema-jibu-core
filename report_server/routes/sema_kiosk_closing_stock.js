@@ -46,6 +46,7 @@ router.put('/:closingStockId', async (req, res) => {
                 res.status(200).json(result);
             })
                 .catch((err) => {
+                    console.log('err', err)
                     res.status(400).json({ message: 'Invalid Assignment Error' });
                 });
         }
