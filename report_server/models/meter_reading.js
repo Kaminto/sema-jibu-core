@@ -20,6 +20,11 @@ module.exports = function (sequelize, DataTypes) {
 			type: DataTypes.FLOAT,
 			allowNull: false,
 		},
+		active: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			defaultValue: '1'
+		},
 		meter_reading_id: {
 			type: DataTypes.STRING(255),
 			allowNull: false,
