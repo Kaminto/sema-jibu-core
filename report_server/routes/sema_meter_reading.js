@@ -31,7 +31,7 @@ router.post('/', function (req, res, next) {
 	req.check('meter_value', 'Parameter meter_value is missing').exists();
 	req.check('kiosk_id', 'Parameter kiosk_id is missing').exists();
 	req.check('meter_reading_id', 'Parameter meter_reading_id is missing').exists();
-
+	semaLog.info('body: ', req.body);
 	req.getValidationResult().then(function (result) {
 		if (!result.isEmpty()) {
 			const errors = result.array().map(elem => {
