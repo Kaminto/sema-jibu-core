@@ -45,10 +45,10 @@ router.post('/', function (req, res, next) {
 			meterReadingModal.create({ ...req.body, active: 1 }).then(result => {
 				res.status(200).json(result);
 			})
-				.catch(Sequelize.ForeignKeyConstraintError, function handleError() {
+				.catch((err) => {
+					console.log('err', err)
 					res.status(400).json({ message: 'Invalid Assignment Error' });
 				})
-				.catch(next);
 		}
 	})
 });
@@ -68,12 +68,13 @@ router.put('/:meter_reading_id', async (req, res) => {
 		} else {
 			semaLog.info('ReceiptPaymentTypeId: ' + req.params.meter_reading_id);
 			semaLog.info('body: ', req.body);
-            meterReadingModal.update(req.body, { where: { meter_reading_id: req.params.meter_reading_id } }).then(result => {
-                res.status(200).json(result);
-            })
-                .catch((err) => {
-                    res.status(400).json({ message: 'Invalid Assignment Error' });
-                });
+			meterReadingModal.update(req.body, { where: { meter_reading_id: req.params.meter_reading_id } }).then(result => {
+				res.status(200).json(result);
+			})
+				.catch((err) => {
+					console.log('err', err)
+					res.status(400).json({ message: 'Invalid Assignment Error' });
+				});
 		}
 	});
 });
