@@ -128,7 +128,7 @@ module.exports = function (sequelize, DataTypes) {
 		},
 		frequency: {
 			type: DataTypes.TEXT,
-			allowNull: false
+			allowNull: true
 		},
 		reminder_date: {
 			type: DataTypes.DATE,
