@@ -190,10 +190,153 @@ router.get('/admin/:id', async (req, res, next) => {
 		.catch(next);
 });
 
+
+router.post('/admin', async (req, res) => {
+	semaLog.info('create user - enter');
+	console.log('body', req.body)
+	const {
+		username,
+		email,
+		password,
+		firstName,
+		lastName,
+		role,
+		kiosk
+	} = req.body;
+	try {
+		const user = await db.user.findOne({
+			where: { [Op.or]: [{ email: email }, { username: username }] }
+		});
+		if (user) {
+			semaLog.info('Email/username already exists');
+			throw new Error('User already exists');
+		}
+
+		const createdUser = await db.user.create({
+			username,
+			email,
+			password,
+			first_name: firstName,
+			last_name: lastName,
+			active: true
+		});
+		let newUser = await createdUser.toJSON();
+
+		const userRole = await db.user_role.create({
+			role_id: role,
+			user_id: newUser.id,
+		});
+		let newUserRole = await userRole.toJSON();
+
+		const kioskUser = await db.kiosk_user.create({
+			kiosk_id: kiosk,
+			user_id: newUser.id,
+			active: 1
+		});
+
+
+		console.log('createdUser', newUser);
+		console.log('newUserRole', newUserRole);
+
+
+		semaLog.info('User created success');
+		res.json({ data: newUser })
+	} catch (err) {
+		semaLog.error(`Create user failed - ${err}`);
+		res.status(400).json({
+			message: `Failed to create user ${err}`,
+			err: `${err}`
+		});
+	}
+});
+
+router.put('/admin/:id', async (req, res) => {
+	semaLog.info(`UPDATE user ${req.params.id} - enter`);
+	const {
+		username,
+		email,
+		password,
+		firstName,
+		lastName,
+		role,
+		kiosk
+	} = req.body;
+	console.log('body', req.body);
+
+	try {
+
+		const createdUser = await db.user.update({
+			username,
+			email,
+			first_name: firstName,
+			last_name: lastName,
+			active: true
+		}, { where: { id: req.params.id } });
+
+		const checkUserRole = await db.user_role.findOne({
+			where: { user_id: req.params.id }
+		});
+
+		console.log('checkUserRole', checkUserRole);
+
+		if (checkUserRole) {
+			const userRole = await db.user_role.update({
+				role_id: role,
+			}, { where: { user_id: req.params.id } }
+			);
+		}
+
+		if (!checkUserRole) {
+			if (role != 'N/A') {
+				await db.user_role.create({
+					role_id: role,
+					user_id: req.params.id,
+				});
+			}
+
+		}
+
+
+
+
+		const checkKioskUser = await db.kiosk_user.findOne({
+			where: { user_id: req.params.id }
+		});
+
+		if (checkKioskUser) {
+			const kioskUser = await db.kiosk_user.update({
+				kiosk_id: kiosk,
+				active: 1
+			}, { where: { user_id: req.params.id } });
+		}
+
+		if (!checkKioskUser) {
+			if (kiosk != 'N/A') {
+				await db.kiosk_user.create({
+					kiosk_id: kiosk,
+					user_id: req.params.id,
+				});
+			}
+		}
+
+
+		var update = await db.user.findByPk(req.params.id);
+		semaLog.info('User created success');
+		res.json({ data: update })
+	} catch (err) {
+		semaLog.error(`Create user failed - ${err}`);
+		res.status(400).json({
+			message: `Failed to create user ${err}`,
+			err: `${err}`
+		});
+	}
+
+});
+
 function handleError(res, statusCode, message) {
-    return (error) => {
-        return res.status(statusCode).json({ message: message || error.message });
-    };
+	return (error) => {
+		return res.status(statusCode).json({ message: message || error.message });
+	};
 }
 
 module.exports = router;
