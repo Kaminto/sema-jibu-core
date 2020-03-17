@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "bcrypt": "^3.0.6",
+    "bluebird": "^3.7.2",
     "body-parser": "~1.18.2",
     "constantinople": "^3.1.2",
     "cookie-parser": "^1.4.4",
@@ -35,6 +36,7 @@
     "parse-error": "^0.2.0",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
+    "ramda": "^0.27.0",
     "request": "^2.88.2",
     "sequelize": "^6.0.0-beta.4",
     "sequelize-cli": "^5.5.1",

@@ -7,6 +7,9 @@ const semaLog = require('../seama_services/sema_logger');
 const bodyParser = require('body-parser');
 const Product = require('../model_layer/Product');
 
+const list = require('./products/list');
+const findById = require('./products/find-by-id');
+
 // Note that the query for updated products must include products recently deactivated as well
 // as active products
 var sqlQueryDate = "SELECT * FROM product WHERE updated_at > ? ";
@@ -63,6 +66,29 @@ const getUTCDate = (date) => {
 		date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
 
 };
+
+router.get('/admin', async (req, res, next) => {
+	semaLog.info('GET kiosks - Enter');
+	list.listAll(req.query).then(({ data, total }) => {
+		return res.json({ data, total });
+	})
+		.catch(next);
+});
+
+router.get('/admin/:id', async (req, res, next) => {
+	semaLog.info('GET kiosk - Enter');
+	const id = parseInt(req.params.id);
+	return findById.findByPk(id)
+		.then(data => res.status(200).json({ data }))
+		.catch(Sequelize.EmptyResultError, handleError(res, 404))
+		.catch(next);
+});
+
+function handleError(res, statusCode, message) {
+    return (error) => {
+        return res.status(statusCode).json({ message: message || error.message });
+    };
+}
 
 
 module.exports = router;
