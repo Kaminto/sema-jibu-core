@@ -15,16 +15,30 @@ module.exports = models => {
 	});
 
 	// Instance level method: to use when comparing passwords on user login
-	models.user.prototype.comparePassword = function(pw) {
+	models.user.prototype.comparePassword = function (pw) {
 		return bcrypt.compareSync(pw, this.password);
 	};
 
 	// We override the default toJSON so we NEVER send the password
 	// to the client
-	models.user.prototype.toJSON = async function() {
+	models.user.prototype.toJSON = async function () {
 		var values = Object.assign({}, this.get());
 		delete values.password;
 		let role = await this.getRoles();
+		const kioskUsers = await models.kiosk_user.findOne({
+			where: { user_id: values.id }
+		});
+		let kiosk = []
+		if (kioskUsers) {
+
+			ki = kioskUsers.toJSON();
+			console.log('kioskUsers', ki);
+			kiosk = await models.kiosk.findAll({
+				where: { id: ki.kiosk_id }
+			});
+		}
+
+
 
 		return {
 			id: values.id,
@@ -33,11 +47,12 @@ module.exports = models => {
 			firstName: values.first_name,
 			lastName: values.last_name,
 			active: values.active,
-			role: role.map(r => ({ code: r.code, authority: r.authority }))
+			kiosk: kiosk.length === 0 ? 'N/A' : kiosk[0].id ,
+			role: role.map(r => ({ id: r.id, code: r.code, authority: r.authority }))
 		};
 	};
 
-	models.product.prototype.toJSON = async function() {
+	models.product.prototype.toJSON = async function () {
 		const values = Object.assign({}, this.get());
 		const category = await this.getProduct_category();
 		const productMrp = await models.product_mrp.findAll({
@@ -75,7 +90,7 @@ module.exports = models => {
 		};
 	};
 
-	models.product_mrp.toJSON = async function() {
+	models.product_mrp.toJSON = async function () {
 		const values = Object.assign({}, this.get());
 		return {
 			id: values.id,
