@@ -133,7 +133,9 @@ app.use('/sema/health-check', seama_health_check);
 app.use('/sema/kiosk_users', sema_kiosk_user);
 app.use('/sema/login', seama_login);
 app.use('/sema/daily_production', sema_daily_production);
-app.use('/sema/kiosks', isAuthenticated, seama_kiosks);
+
+app.use('/sema/kiosks', seama_kiosks);
+//app.use('/sema/kiosks', isAuthenticated, seama_kiosks);
 app.use('/sema/site/customers/', sema_customers);
 app.use('/sema/site/receipts/', sema_receipts);
 app.use('/sema/products/', sema_products);
@@ -149,12 +151,12 @@ app.use('/sema/measure-units/', sema_units);
 app.use('/sema/dashboard/site/water-chart/', sema_water_chart);
 app.use('/sema/dashboard/site/water-summary/', sema_water_summary);
 app.use('/sema/data-export', isAuthenticated, sema_data_export);
-
+ 
 app.use('/sema/users', sema_users);
 app.use('/sema/admin/products', isAuthenticated, sema_admin_products);
 app.use('/sema/reminders', sema_reminders);
  
-
+ 
  app.use('/sema/meter_reading/', sema_meter_reading);
  app.use('/sema/promotion/', sema_promotion);
  app.use('/sema/sema_pricing/', sema_pricing); 

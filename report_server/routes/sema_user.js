@@ -6,6 +6,9 @@ const _ = require('lodash');
 const Op = Sequelize.Op;
 const db = require('../models');
 
+const list = require('./users/list');
+const findById = require('./users/find-by-id');
+
 router.get('/', async (req, res) => {
 	semaLog.info('GET users - Enter');
 
@@ -155,13 +158,13 @@ router.put('/toggle/:id', async (req, res) => {
 		res.json({
 			message: `User ${id} changed to ${
 				user.active ? 'active' : 'not active'
-			}`,
+				}`,
 			user: await updatedUser.toJSON()
 		});
 	} catch (err) {
 		const message = `Toggle user ${id} to ${
 			user.active ? 'not active' : 'active'
-		} failed - ${err}`;
+			} failed - ${err}`;
 		semaLog.error(message);
 		res.status(400).json({
 			messsage,
@@ -169,5 +172,28 @@ router.put('/toggle/:id', async (req, res) => {
 		});
 	}
 });
+
+router.get('/admin', async (req, res, next) => {
+	semaLog.info('GET users - Enter');
+	list.listAllUsers(req.query).then(({ data, total }) => {
+		return res.json({ data, total });
+	})
+		.catch(next);
+});
+
+router.get('/admin/:id', async (req, res, next) => {
+	semaLog.info('GET user - Enter');
+	const id = parseInt(req.params.id);
+	return findById.findUser(id)
+		.then(data => res.status(200).json({ data }))
+		.catch(Sequelize.EmptyResultError, handleError(res, 404))
+		.catch(next);
+});
+
+function handleError(res, statusCode, message) {
+    return (error) => {
+        return res.status(statusCode).json({ message: message || error.message });
+    };
+}
 
 module.exports = router;
