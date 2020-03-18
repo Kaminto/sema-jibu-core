@@ -2,8 +2,9 @@ const models = require('../../models');
 const list = require('./../utils/util');
 
 async function listAll(query) {
+    console.log('query',query);
     const options = list.buildQuery(query);
-    let users = await models.kiosk.findAndCountAll(options);
+    let users = await models.franchise.findAndCountAll(options);
     let userData = await Promise.all(
         users.rows.map(async user => {
             user = await user.toJSON();

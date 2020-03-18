@@ -30,16 +30,12 @@ module.exports = models => {
 		});
 		let kiosk = []
 		if (kioskUsers) {
-
 			ki = kioskUsers.toJSON();
 			console.log('kioskUsers', ki);
 			kiosk = await models.kiosk.findAll({
 				where: { id: ki.kiosk_id }
 			});
 		}
-
-
-
 		return {
 			id: values.id,
 			email: values.email,
@@ -47,8 +43,24 @@ module.exports = models => {
 			firstName: values.first_name,
 			lastName: values.last_name,
 			active: values.active,
-			kiosk: kiosk.length === 0 ? 'N/A' : kiosk[0].id ,
+			kiosk: kiosk.length === 0 ? 'N/A' : kiosk[0].id,
 			role: role.map(r => ({ id: r.id, code: r.code, authority: r.authority }))
+		};
+	};
+
+
+	models.franchise.prototype.toJSON = async function () {
+		var values = Object.assign({}, this.get());
+		const kiosk = await models.kiosk.findOne({
+			where: { id: values.kiosk_id }
+		});
+		return {
+			...values,
+			name: values.name + ' ' + values.code,
+			id: values.kiosk_id,
+			created_at: kiosk.created_at,
+			updated_at: kiosk.updated_at,
+			region_id: kiosk.region_id,
 		};
 	};
 
