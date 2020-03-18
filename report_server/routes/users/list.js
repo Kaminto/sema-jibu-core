@@ -2,6 +2,7 @@ const models = require('../../models');
 const list = require('./../utils/util');
 
 async function listAllUsers(query) {
+    console.log('query',query);
     const options = list.buildQuery(query);
     let users = await models.user.findAndCountAll(options);
     let userData = await Promise.all(
