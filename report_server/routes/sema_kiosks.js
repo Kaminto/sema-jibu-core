@@ -14,7 +14,7 @@ router.get('/', function(req, res) {
 			console.log("WTF: "+ err);
 			return ;
 		}
-		connection.query('SELECT * FROM kiosk', (err, result ) => {
+		connection.query('SELECT * FROM kiosk WHERE active = 1', (err, result ) => {
 			connection.release();
 
 			if (err) {
