@@ -13,6 +13,14 @@ router.get('/admin', async (req, res, next) => {
         .catch(next);
 });
 
+router.get('/admin/all', async (req, res, next) => {
+    semaLog.info('GET roles - Enter');
+    list.listAllDropDown(req.query).then(({ data, total }) => {
+        return res.json({ data, total });
+    })
+        .catch(next);
+});
+
 router.get('/admin/:id', async (req, res, next) => {
     semaLog.info('GET role - Enter');
     const id = parseInt(req.params.id);

@@ -8,6 +8,8 @@ const bodyParser = require('body-parser');
 const Product = require('../model_layer/Product');
 
 const list = require('./products/list');
+const post = require('./products/post');
+
 const findById = require('./products/find-by-id');
 
 // Note that the query for updated products must include products recently deactivated as well
@@ -74,6 +76,14 @@ router.get('/admin', async (req, res, next) => {
 	})
 		.catch(next);
 });
+
+router.post('/admin', async (req, res, next) => {
+	semaLog.info('POST kiosks - Enter');
+	post.create(req.body).then(({ data, total }) => {
+		return res.json({ data, total });
+	})
+		.catch(next);
+}); 
 
 router.get('/admin/:id', async (req, res, next) => {
 	semaLog.info('GET kiosk - Enter');
