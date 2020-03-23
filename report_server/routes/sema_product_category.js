@@ -7,10 +7,10 @@ const semaLog = require('../seama_services/sema_logger');
 const bodyParser = require('body-parser');
 const Product = require('../model_layer/Product');
 
-const list = require('./products/list');
+const list = require('./product_category/list');
 const post = require('./products/post');
-const update = require('./products/update');
-const findById = require('./products/find-by-id');
+
+const findById = require('./product_category/find-by-id');
 
 // Note that the query for updated products must include products recently deactivated as well
 // as active products
@@ -77,17 +77,8 @@ router.get('/admin', async (req, res, next) => {
 		.catch(next);
 });
 
-
-router.put('/admin/:id' , async (req, res, next) => {
-	semaLog.info('PUT Product - Enter');
-	update.update(req.body, req.params.id).then(data => {
-		return res.json({ data });
-	})
-		.catch(next);
-}); 
-
 router.post('/admin', async (req, res, next) => {
-	semaLog.info('Post Product - Enter');
+	semaLog.info('POST kiosks - Enter');
 	post.create(req.body).then(({ data, total }) => {
 		return res.json({ data, total });
 	})

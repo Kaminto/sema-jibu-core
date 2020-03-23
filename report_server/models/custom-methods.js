@@ -31,7 +31,6 @@ module.exports = models => {
 		let kiosk = []
 		if (kioskUsers) {
 			ki = kioskUsers.toJSON();
-			console.log('kioskUsers', ki);
 			kiosk = await models.kiosk.findAll({
 				where: { id: ki.kiosk_id }
 			});
@@ -77,10 +76,11 @@ module.exports = models => {
 			name: values.name,
 			sku: values.sku,
 			description: values.description,
-			category: {
-				id: category.id,
-				name: category.name
-			},
+			// category: {
+			// 	id: category.id,
+			// 	name: category.name
+			// },
+			category: category.id,
 			priceAmount: values.price_amount,
 			priceCurrency: values.price_currency,
 			minQuantity: values.minimum_quantity,

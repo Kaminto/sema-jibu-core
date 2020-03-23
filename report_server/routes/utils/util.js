@@ -26,9 +26,11 @@ function sort(query) {
 exports.sort = sort;
 function filter(query) {
     if (query.filter) {
-        return {
-            where: Object.assign({}, query.filter)
-        };
+        if (!query.filter.hasOwnProperty('customfilter')) {
+            return {
+                where: Object.assign({}, query.filter)
+            };
+        }
     }
     return {};
 }

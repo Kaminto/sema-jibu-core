@@ -20,6 +20,9 @@ var sema_sales = require('./routes/sema_sales');
 var sema_sales_by_channel = require('./routes/sema_sales_by_channel');
 var sema_customers = require('./routes/sema_customers');
 var sema_products = require('./routes/sema_products');
+
+var sema_product_category = require('./routes/sema_product_category');
+var sema_overview = require('./routes/sema_overview');
 var sema_receipts = require('./routes/sema_receipts');
 var sema_sales_channels = require('./routes/sema_sales_channels');
 var sema_customer_types = require('./routes/sema_customer_types');
@@ -140,6 +143,9 @@ app.use('/sema/roles', seama_roles);
 app.use('/sema/site/customers/', sema_customers);
 app.use('/sema/site/receipts/', sema_receipts);
 app.use('/sema/products/', sema_products);
+app.use('/sema/product_category/', sema_product_category);
+app.use('/sema/overview/', sema_overview);
+
 app.use('/sema/sales-channels/', isAuthenticated, sema_sales_channels);
 app.use('/sema/customer-types/', isAuthenticated, sema_customer_types);
 app.use('/sema/site/product-mrps/', isAuthenticated, sema_product_mrps);
