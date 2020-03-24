@@ -8,9 +8,21 @@ async function listAll(query) {
     let userData = await Promise.all(
         users.rows.map(async user => {
             user = await user.toJSON();
-            return { ...user }
+            return { ...user,
+                searchString: user.name + ' ' + user.description }
         })
     );
+
+    if (query.filter) {
+        if (query.filter.hasOwnProperty('customfilter')) {
+            console.log(userData[0])
+            return {
+                data: userData.filter(x=> x.searchString.toLowerCase().includes(query.filter.customfilter.toLowerCase())),
+                total: users.count
+            }
+        }
+    }
+
     return {
         data: userData,
         total: users.count
@@ -18,4 +30,9 @@ async function listAll(query) {
 
 }
 
+async function listAllProducts() {
+    return listAll({})
+}
+
 exports.listAll = listAll;
+exports.listAllProducts = listAllProducts;
