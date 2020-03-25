@@ -4,28 +4,6 @@ const router = express.Router();
 const semaLog = require(`${__basedir}/seama_services/sema_logger`);
 const kioskClosingStockModal = require('../models').kiosk_closing_stock;
 
-const sqlSiteIdOnly =
-    'SELECT * ' +
-    'FROM kiosk_closing_stock ' +
-    "WHERE kiosk_id = ? AND active = b'1'";
-
-const sqlBeginDateOnly =
-    'SELECT * ' +
-    'FROM kiosk_closing_stock ' +
-    "WHERE kiosk_id = ? AND active = b'1'" +
-    'AND created_at >= ?';
-
-const sqlEndDateOnly =
-    'SELECT * ' +
-    'FROM kiosk_closing_stock ' +
-    "WHERE kiosk_id = ? AND active = b'1'" +
-    'AND created_at <= ?';
-
-const sqlBeginEndDate =
-    'SELECT * ' +
-    'FROM kiosk_closing_stock ' +
-    "WHERE kiosk_id = ? AND active = b'1'" +
-    'AND created_at BETWEEN ? AND ?';
 
  
 router.put('/:closingStockId', async (req, res) => {
