@@ -68,6 +68,7 @@ router.put('/:meter_reading_id', async (req, res) => {
 		} else {
 			semaLog.info('ReceiptPaymentTypeId: ' + req.params.meter_reading_id);
 			semaLog.info('body: ', req.body);
+			delete req.body.id;
 			meterReadingModal.update(req.body, { where: { meter_reading_id: req.params.meter_reading_id } }).then(result => {
 				res.status(200).json(result);
 			})
