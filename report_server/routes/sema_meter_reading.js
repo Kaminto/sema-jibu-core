@@ -1,8 +1,10 @@
 const express = require('express');
 const Sequelize = require('sequelize');
+var format = require('date-fns/format')
 const router = express.Router();
 const semaLog = require(`${__basedir}/seama_services/sema_logger`);
 const meterReadingModal = require('../models').meter_reading;
+const models = require('../models');
 
 /* GET Meter Reading in the database. */
 router.get('/:kiosk_id/:date', (req, res, next) => {
@@ -32,7 +34,7 @@ router.post('/', function (req, res, next) {
 	req.check('kiosk_id', 'Parameter kiosk_id is missing').exists();
 	req.check('meter_reading_id', 'Parameter meter_reading_id is missing').exists();
 	semaLog.info('body: ', req.body);
-	req.getValidationResult().then(function (result) {
+	req.getValidationResult().then(async function (result) {
 		if (!result.isEmpty()) {
 			const errors = result.array().map(elem => {
 				return elem.msg;
@@ -42,17 +44,24 @@ router.post('/', function (req, res, next) {
 			);
 			res.status(400).send(errors.toString());
 		} else {
-			meterReadingModal.create({ ...req.body, active: 1 }).then(result => {
-				res.status(200).json(result);
-			})
-				.catch((err) => {
-					console.log('err', err)
-					res.status(400).json({ message: 'Invalid Assignment Error' });
+
+			const cj = await findByKioskIdAndWastageName(req.body.kiosk_id, req.body.created_at);
+			if (cj.length === 0) {
+				create({ ...req.body, active: 1 }).then(result => {
+					res.status(200).json(result);
 				})
+					.catch((err) => {
+						console.log('err', err);
+						res.append('message', 'Contact Support Something not Right');
+						res.sendStatus(400);
+					})
+			} else if (cj.length > 0) {
+				res.append('message', 'Meter Reading has already been sent');
+				res.sendStatus(400);
+			}
 		}
 	})
 });
-
 
 router.put('/:meter_reading_id', async (req, res) => {
 	semaLog.info('PUT customer_credit - Enter');
@@ -69,7 +78,7 @@ router.put('/:meter_reading_id', async (req, res) => {
 			semaLog.info('ReceiptPaymentTypeId: ' + req.params.meter_reading_id);
 			semaLog.info('body: ', req.body);
 			delete req.body.id;
-			meterReadingModal.update(req.body, { where: { meter_reading_id: req.params.meter_reading_id } }).then(result => {
+			update(req.body, req.params.meter_reading_id).then(result => {
 				res.status(200).json(result);
 			})
 				.catch((err) => {
@@ -80,5 +89,41 @@ router.put('/:meter_reading_id', async (req, res) => {
 	});
 });
 
+function findByKioskIdAndWastageName(kiosk_id, date) {
+	console.log(kiosk_id + " " + date)
+	return meterReadingModal.findAll({
+		where: {
+			kiosk_id: kiosk_id,
+		}
+	}).then(result => {
+		let ty = JSON.parse(JSON.stringify(result));
+		const er = ty.filter(e => {
+			if (format(new Date(date), 'yyyy-MM-dd') === format(new Date(e.created_at), 'yyyy-MM-dd')) {
+				return { ...e }
+			}
+		})
+		return er;
+	})
+}
+
+function create(body) {
+	return meterReadingModal.create(body).then(result => {
+		return result;
+	})
+		.catch((err) => {
+			console.log('err', err)
+			return { message: 'Invalid Assignment Error' };
+		});
+}
+
+function update(body, meter_reading_id) {
+	return meterReadingModal.update(body, { where: { meter_reading_id } }).then(result => {
+		return result;
+	})
+		.catch((err) => {
+			console.log('err', err)
+			return { message: 'Invalid Assignment Error' };
+		});
+}
 
 module.exports = router;

@@ -80,6 +80,7 @@ router.get('/admin', async (req, res, next) => {
 
 router.put('/admin/:id' , async (req, res, next) => {
 	semaLog.info('PUT Product - Enter');
+	delete req.body.id;
 	update.update(req.body, req.params.id).then(data => {
 		return res.json({ data });
 	})
