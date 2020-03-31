@@ -14,11 +14,15 @@ var index = require('./routes');
 var seama_health_check = require('./routes/sema_health_check');
 var seama_login = require('./routes/sema_login');
 var seama_kiosks = require('./routes/sema_kiosks');
+var seama_roles = require('./routes/sema_roles');
 var seama_water_operations = require('./routes/sema_water_operations');
 var sema_sales = require('./routes/sema_sales');
 var sema_sales_by_channel = require('./routes/sema_sales_by_channel');
 var sema_customers = require('./routes/sema_customers');
 var sema_products = require('./routes/sema_products');
+
+var sema_product_category = require('./routes/sema_product_category');
+var sema_overview = require('./routes/sema_overview');
 var sema_receipts = require('./routes/sema_receipts');
 var sema_sales_channels = require('./routes/sema_sales_channels');
 var sema_customer_types = require('./routes/sema_customer_types');
@@ -107,8 +111,9 @@ app.set('view engine', 'jade');
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({limit: '50mb'}));
+//app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true, parameterLimit: 50000 }));
 app.use(validator());
 app.use(cookieParser());
 
@@ -132,10 +137,16 @@ app.use('/sema/health-check', seama_health_check);
 app.use('/sema/kiosk_users', sema_kiosk_user);
 app.use('/sema/login', seama_login);
 app.use('/sema/daily_production', sema_daily_production);
-app.use('/sema/kiosks', isAuthenticated, seama_kiosks);
+
+app.use('/sema/kiosks', seama_kiosks);
+app.use('/sema/roles', seama_roles);
+//app.use('/sema/kiosks', isAuthenticated, seama_kiosks);
 app.use('/sema/site/customers/', sema_customers);
 app.use('/sema/site/receipts/', sema_receipts);
-app.use('/sema/products/', isAuthenticated, sema_products);
+app.use('/sema/products/', sema_products);
+app.use('/sema/product_category/', sema_product_category);
+app.use('/sema/overview/', sema_overview);
+
 app.use('/sema/sales-channels/', isAuthenticated, sema_sales_channels);
 app.use('/sema/customer-types/', isAuthenticated, sema_customer_types);
 app.use('/sema/site/product-mrps/', isAuthenticated, sema_product_mrps);
@@ -148,12 +159,12 @@ app.use('/sema/measure-units/', sema_units);
 app.use('/sema/dashboard/site/water-chart/', sema_water_chart);
 app.use('/sema/dashboard/site/water-summary/', sema_water_summary);
 app.use('/sema/data-export', isAuthenticated, sema_data_export);
-
-app.use('/sema/users', isAuthenticated, sema_users);
+ 
+app.use('/sema/users', sema_users);
 app.use('/sema/admin/products', isAuthenticated, sema_admin_products);
 app.use('/sema/reminders', sema_reminders);
-
-
+ 
+ 
  app.use('/sema/meter_reading/', sema_meter_reading);
  app.use('/sema/promotion/', sema_promotion);
  app.use('/sema/sema_pricing/', sema_pricing); 

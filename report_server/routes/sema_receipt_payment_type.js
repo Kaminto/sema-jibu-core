@@ -6,10 +6,20 @@ const receipt_payment_type = require('../models').receipt_payment_type;
 const receipt = require('../models').receipt;
 
 /* GET Payment Type Credit in the database. */
-router.get('/', function (req, res) {
+router.get('/:kiosk_id/:date', function (req, res) {
 	semaLog.info('Payment Type - Enter');
-	receipt_payment_type.findAll().then(receiptPaymentType => {
-		res.send(receiptPaymentType)
+	let kiosk_id = req.params.kiosk_id;
+	receipt_payment_type.findAll({
+		where: {
+			kiosk_id: kiosk_id,
+			created_at: {
+				gte: req.params.date
+			},
+		},
+	}).then(receiptPaymentType => {
+		res.send(receiptPaymentType);
+	}).catch(function (err) {
+		res.json({ error: err });
 	});
 });
 
@@ -51,7 +61,6 @@ router.post('/', function (req, res, next) {
 	req.check('amount', 'Parameter amount is missing').exists();
 	req.check('receipt_payment_type_id', 'receipt_payment_type_id amount is missing').exists();
 
-
 	req.getValidationResult().then(function (result) {
 		if (!result.isEmpty()) {
 			const errors = result.array().map(elem => {
@@ -62,8 +71,7 @@ router.post('/', function (req, res, next) {
 			);
 			res.status(400).send(errors.toString());
 		} else {
-
-			receipt_payment_type.create({...req.body,active: 1}).then(result => {
+			receipt_payment_type.create({ ...req.body, active: 1 }).then(result => {
 				res.status(200).json(result);
 			})
 				.catch(Sequelize.ForeignKeyConstraintError, function handleError() {
@@ -160,13 +168,13 @@ router.put('/:receipt_payment_type_id', async (req, res) => {
 						req.body.payment_type_id ? req.body.payment_type_id : result.payment_type_id,
 					];
 
-					  // Active is set via a 'bit;
-					  if (!req.body.active ? req.body.active : result.active) {
-                        customerParams.push(0);
-                    } else {
-                        customerParams.push(1);
-                    }
-					
+					// Active is set via a 'bit;
+					if (!req.body.active ? req.body.active : result.active) {
+						customerParams.push(0);
+					} else {
+						customerParams.push(1);
+					}
+
 					receiptPaymentTypeParams.push(req.params.receipt_payment_type_id);
 					const sqlUpdateReceiptPaymentType =
 						'UPDATE receipt_payment_type ' +

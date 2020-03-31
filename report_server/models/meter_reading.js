@@ -20,6 +20,15 @@ module.exports = function (sequelize, DataTypes) {
 			type: DataTypes.FLOAT,
 			allowNull: false,
 		},
+		active: { 
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			defaultValue: '1'
+		},
+		meter_reading_id: {
+			type: DataTypes.STRING(255),
+			allowNull: false,
+		},
 		created_at: {
 			type: DataTypes.DATE,
 			allowNull: false,
@@ -27,7 +36,7 @@ module.exports = function (sequelize, DataTypes) {
 		},
 		updated_at: {
 			type: DataTypes.DATE,
-			allowNull: false,
+			allowNull: true,
 			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
 		},
 	}, {

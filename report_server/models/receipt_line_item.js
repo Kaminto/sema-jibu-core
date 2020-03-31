@@ -42,6 +42,18 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.STRING(45),
 			allowNull: false
 		},
+		pending_bottles: {
+			type: DataTypes.BIGINT,
+			allowNull: true
+		},
+		damaged_bottles: {
+			type: DataTypes.BIGINT,
+			allowNull: true
+		},
+		empties_returned: {
+			type: DataTypes.BIGINT,
+			allowNull: true
+		},
 		product_id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,

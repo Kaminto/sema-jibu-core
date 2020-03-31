@@ -2,8 +2,7 @@
 
 # dependencies
 /node_modules
-
-public_react
+ 
 yarn.lock
 package-lock.json
 

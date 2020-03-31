@@ -29,6 +29,14 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.DECIMAL,
 			allowNull: false,
 		},
+		kiosk_id: {
+			type: DataTypes.BIGINT,
+			allowNull: false,
+			references: {
+				model: 'kiosk',
+				key: 'id'
+			}
+		},
 		active: {
 			type: DataTypes.BOOLEAN,
 			allowNull: false,

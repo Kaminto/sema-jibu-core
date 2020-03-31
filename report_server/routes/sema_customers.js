@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const Sequelize = require('sequelize');
 const semaLog = require('../seama_services/sema_logger');
 const Customer = require('../model_layer/Customer');
+const customerModal = require('../models').customer_account;
 const bodyParser = require('body-parser');
 
 router.use(bodyParser.urlencoded({ extended: false }));
-
+  
 /* GET customers in the database. */
 
 // const sqlSiteIdOnly =
@@ -36,31 +38,31 @@ const sqlSiteIdOnly =
 	'SELECT * ' +
 	'FROM customer_account ' +
 	"WHERE kiosk_id = ? AND active = b'1'" +
-	 ' ORDER BY name ASC';
+	' ORDER BY name ASC';
 const sqlBeginDateOnly =
 	'SELECT * ' +
 	'FROM customer_account ' +
 	"WHERE kiosk_id = ? AND active = b'1'" +
 	'AND created_at >= ? ' +
-	 ' ORDER BY name ASC';
+	' ORDER BY name ASC';
 const sqlEndDateOnly =
 	'SELECT * ' +
 	'FROM customer_account ' +
 	"WHERE kiosk_id = ? AND active = b'1'" +
 	'AND created_at <= ?' +
-	 ' ORDER BY name ASC';
+	' ORDER BY name ASC';
 const sqlBeginEndDate =
 	'SELECT * ' +
 	'FROM customer_account ' +
 	"WHERE kiosk_id = ? AND active = b'1'" +
 	'AND created_at BETWEEN ? AND ?' +
-	  ' ORDER BY name ASC ';
+	' ORDER BY name ASC ';
 const sqlUpdatedDate =
 	'SELECT * ' +
 	'FROM customer_account ' +
 	'WHERE kiosk_id = ? ' +
 	'AND updated_at > ? ' +
-	  ' ORDER BY name ASC';
+	' ORDER BY name ASC';
 
 
 const sqlDeleteCustomers = 'DELETE FROM customer_account WHERE id = ?';
@@ -72,106 +74,60 @@ const sqlInsertCustomer =
 	'due_amount, address_line1, gps_coordinates, phone_number, active, second_phone_number ) ' +
 	'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
-// const sqlUpdateCustomers = 	"UPDATE customer_account " +
-// 	"SET name = ?, sales_channel_id = ?, customer_type_id = ?," +
-// 		"due_amount = ?, address_line1 = ?, gps_coordinates = ?, " +
-// 		"phone_number = ?, active = ? " +
-// 	"WHERE id = ?";
-const sqlUpdateCustomers =
-	'UPDATE customer_account ' +
-	'SET name = ?, sales_channel_id = ?, customer_type_id = ?,' +
-	'due_amount = ?, address_line1 = ?, gps_coordinates = ?, ' +
-	'phone_number = ?,frequency = ?, reminder_date=?,active = ? ' +
-	'WHERE id = ?';
 
-router.put('/:id', async (req, res) => {
-	semaLog.info('PUT sema_customer - Enter');
-	req.check('id', 'Parameter id is missing').exists();
 
-	req.getValidationResult().then(function(result) {
+router.put('/:id', function (req, res, next) {
+	semaLog.info(req.body);
+	semaLog.info('Customer Update - Enter');
+	req.check('phoneNumber', 'Parameter phoneNumber is missing').exists();
+
+	req.getValidationResult().then(function (result) {
 		if (!result.isEmpty()) {
 			const errors = result.array().map(elem => {
 				return elem.msg;
 			});
-			semaLog.error('PUT customer, Validation error' + errors.toString());
+			semaLog.error(
+				'Update Customer: Validation error: ' + errors.toString()
+			);
 			res.status(400).send(errors.toString());
 		} else {
-			semaLog.info('CustomerId: ' + req.params.id);
-			findCustomers(sqlGetCustomerById, req.params.id).then(
-				function(result) {
-					let customer = new Customer();
-					customer.databaseToClass(result[0]);
-					customer.updateClass(req.body);
+			
+			customerModal.update({ 
+				name: req.body.name,
+				sales_channel_id: req.body.salesChannelId,
+				customer_type_id: req.body.customerTypeId,
+				due_amount: req.body.dueAmount,
+				wallet_balance: req.body.walletBalance,
+				address_line1: req.body.address,
+				gps_coordinates: req.body.gpsCoordinates,
+				updated_at: req.body.gpsCoordinates,
+				phone_number: req.body.phoneNumber,
+				second_phone_number: req.body.secondPhoneNumber,
+				frequency:req.body.frequency,
+				updated_at:req.body.updatedDate,
+				active: req.body.active ? 1 : 0,
+				is_delete: req.body.is_delete,
+			
+			}, { where: { id: req.params.id } }).then(result => {
+				res.status(200).json(result);
+			})
+				.catch(Sequelize.ForeignKeyConstraintError, function handleError() {
+					res.status(400).json({ message: 'Invalid Assignment Error' });
+				})
+				.catch(next);
 
-					// Note - Don't set the updated date... JIRA XXXX
-					// let customerParams = [ customer.name, customer.salesChannelId, customer.customerTypeId,
-					// customer.dueAmount, customer.address, customer.gpsCoordinates, customer.phoneNumber ];
-					let customerParams = [
-						customer.name,
-						customer.salesChannelId,
-						customer.customerTypeId,
-						customer.dueAmount,
-						customer.address,
-						customer.gpsCoordinates,
-						customer.phoneNumber,
-						customer.frequency,
-						customer.reminder_date
-					];
-
-					// Active is set via a 'bit;
-					if (!customer.active) {
-						customerParams.push(0);
-					} else {
-						customerParams.push(1);
-					}
-					customerParams.push(customer.customerId);
-					updateCustomers(
-						sqlUpdateCustomers,
-						customerParams,
-						res,
-						customer
-					);
-				},
-				function(reason) {
-					res.status(404).send(
-						'PUT customer: Could not find customer with id ' +
-							req.params.id
-					);
-				}
-			);
 		}
-	});
+	})
+
 });
-
-const updateCustomers = (query, params, res, customer) => {
-	__pool.getConnection((err, connection) => {
-		connection.query(query, params, function(err, result) {
-			connection.release();
-			if (err) {
-				semaLog.error('updateCustomers customers - failed', { err });
-				res.status(500).send(err.message);
-			} else {
-				semaLog.info('updateCustomers customers - succeeded');
-
-				try {
-					res.json(customer.classToPlain());
-				} catch (err) {
-					semaLog.error('updateCustomers customers - failed', {
-						err
-					});
-					res.status(500).send(err.message);
-				}
-			}
-		});
-	});
-};
+ 
 
 router.delete('/:id', async (req, res) => {
 	semaLog.info('DELETE sema_customer - Enter');
 
 	semaLog.info(req.params.id);
 
-	req.getValidationResult().then(function(result) {
+	req.getValidationResult().then(function (result) {
 		if (!result.isEmpty()) {
 			const errors = result.array().map(elem => {
 				return elem.msg;
@@ -180,10 +136,10 @@ router.delete('/:id', async (req, res) => {
 			res.status(400).send(errors.toString());
 		} else {
 			findCustomers(sqlGetCustomerById, req.params.id).then(
-				function(result) {
+				function (result) {
 					deleteCustomers(sqlDeleteCustomers, req.params.id, res);
 				},
-				function(reason) {
+				function (reason) {
 					res.status(404).send(
 						'Delete customer. Could not find customer with that id'
 					);
@@ -196,7 +152,7 @@ router.delete('/:id', async (req, res) => {
 const findCustomers = (query, params) => {
 	return new Promise((resolve, reject) => {
 		__pool.getConnection((err, connection) => {
-			connection.query(query, params, function(err, result) {
+			connection.query(query, params, function (err, result) {
 				connection.release();
 				if (err) {
 					semaLog.error('customers - failed', { err });
@@ -225,7 +181,7 @@ const findCustomers = (query, params) => {
 const deleteCustomers = (query, params, res) => {
 	return new Promise((resolve, reject) => {
 		__pool.getConnection((err, connection) => {
-			connection.query(query, params, function(err, result) {
+			connection.query(query, params, function (err, result) {
 				connection.release();
 				if (err) {
 					semaLog.error('customers - failed', { err });
@@ -262,7 +218,7 @@ router.post('/', async (req, res) => {
 	req.check('address', 'Parameter address is missing').exists();
 	req.check('phoneNumber', 'Parameter phoneNumber is missing').exists();
 
-	req.getValidationResult().then(function(result) {
+	req.getValidationResult().then(function (result) {
 		if (!result.isEmpty()) {
 			const errors = result.array().map(elem => {
 				return elem.msg;
@@ -297,7 +253,7 @@ router.post('/', async (req, res) => {
 
 const insertCustomers = (customer, query, params, res) => {
 	__pool.getConnection((err, connection) => {
-		connection.query(query, params, function(err, result) {
+		connection.query(query, params, function (err, result) {
 			connection.release();
 			if (err) {
 				semaLog.error('customers - failed', { err });
@@ -316,12 +272,12 @@ const insertCustomers = (customer, query, params, res) => {
 	});
 };
 
-router.get('/', function(req, res) {
+router.get('/', function (req, res) {
 	semaLog.info('GET Customers - Enter');
 
 	req.check('site-id', 'Parameter site-id is missing').exists();
 
-	req.getValidationResult().then(function(result) {
+	req.getValidationResult().then(function (result) {
 		if (!result.isEmpty()) {
 			const errors = result.array().map(elem => {
 				return elem.msg;
@@ -397,10 +353,29 @@ router.get('/', function(req, res) {
 	});
 });
 
+router.get('/:kiosk_id/:date', function (req, res) {
+	semaLog.info('Get Customers - Enter');
+	let kiosk_id = req.params.kiosk_id;
+	customerModal.findAll({
+		where: {
+			kiosk_id: kiosk_id,
+			created_at: {
+				gte: req.params.date
+			},
+		},
+	}).then(result => {
+		semaLog.info('GET Customers - success');
+		res.json({customers: result});
+	}).catch(function (err) {
+		semaLog.error('GET Customers - failed', { err });
+		res.json({ error: err });
+	});
+});
+
 const getCustomers = (query, params, res) => {
 	return new Promise((resolve, reject) => {
 		__pool.getConnection((err, connection) => {
-			connection.query(query, params, function(err, result) {
+			connection.query(query, params, function (err, result) {
 				connection.release();
 
 				if (err) {

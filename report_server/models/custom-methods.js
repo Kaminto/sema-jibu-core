@@ -15,17 +15,26 @@ module.exports = models => {
 	});
 
 	// Instance level method: to use when comparing passwords on user login
-	models.user.prototype.comparePassword = function(pw) {
+	models.user.prototype.comparePassword = function (pw) {
 		return bcrypt.compareSync(pw, this.password);
 	};
 
 	// We override the default toJSON so we NEVER send the password
 	// to the client
-	models.user.prototype.toJSON = async function() {
+	models.user.prototype.toJSON = async function () {
 		var values = Object.assign({}, this.get());
 		delete values.password;
 		let role = await this.getRoles();
-
+		const kioskUsers = await models.kiosk_user.findOne({
+			where: { user_id: values.id }
+		});
+		let kiosk = []
+		if (kioskUsers) {
+			ki = kioskUsers.toJSON();
+			kiosk = await models.kiosk.findAll({
+				where: { id: ki.kiosk_id }
+			});
+		}
 		return {
 			id: values.id,
 			email: values.email,
@@ -33,11 +42,28 @@ module.exports = models => {
 			firstName: values.first_name,
 			lastName: values.last_name,
 			active: values.active,
-			role: role.map(r => ({ code: r.code, authority: r.authority }))
+			kiosk: kiosk.length === 0 ? 'N/A' : kiosk[0].id,
+			role: role.map(r => ({ id: r.id, code: r.code, authority: r.authority }))
 		};
 	};
 
-	models.product.prototype.toJSON = async function() {
+
+	models.franchise.prototype.toJSON = async function () {
+		var values = Object.assign({}, this.get());
+		const kiosk = await models.kiosk.findOne({
+			where: { id: values.kiosk_id }
+		});
+		return {
+			...values,
+			name: values.name + ' ' + values.code,
+			id: values.kiosk_id,
+			created_at: kiosk.created_at,
+			updated_at: kiosk.updated_at,
+			region_id: kiosk.region_id,
+		};
+	};
+
+	models.product.prototype.toJSON = async function () {
 		const values = Object.assign({}, this.get());
 		const category = await this.getProduct_category();
 		const productMrp = await models.product_mrp.findAll({
@@ -50,10 +76,11 @@ module.exports = models => {
 			name: values.name,
 			sku: values.sku,
 			description: values.description,
-			category: {
-				id: category.id,
-				name: category.name
-			},
+			// category: {
+			// 	id: category.id,
+			// 	name: category.name
+			// },
+			category: category.id,
 			priceAmount: values.price_amount,
 			priceCurrency: values.price_currency,
 			minQuantity: values.minimum_quantity,
@@ -75,7 +102,7 @@ module.exports = models => {
 		};
 	};
 
-	models.product_mrp.toJSON = async function() {
+	models.product_mrp.toJSON = async function () {
 		const values = Object.assign({}, this.get());
 		return {
 			id: values.id,
