@@ -1,6 +1,8 @@
 const express = require('express');
 const Sequelize = require('sequelize');
-var format = require('date-fns/format')
+var format = require('date-fns/format');
+var isSameDay = require('date-fns/isSameDay');
+var ug = require('date-fns/locale/ug');
 const router = express.Router();
 const semaLog = require(`${__basedir}/seama_services/sema_logger`);
 const kioskClosingStockModal = require('../models').kiosk_closing_stock;
@@ -57,6 +59,7 @@ router.post('/', async (req, res) => {
         } else {
             semaLog.info('req.body', { ...req.body, active: 1 });
             const cj = await findByKioskIdAndWastageName(req.body.kiosk_id, req.body.product_id, req.body.created_at);
+            console.log('cj', cj)
             if (cj.length === 0) {
                 create({ ...req.body, active: 1, created_at: req.body.created_at }).then(result => {
                     res.status(200).json(result);
@@ -80,7 +83,7 @@ router.put('/:closingStockId', async (req, res) => {
     semaLog.info('PUT kiosk_closing_stock - Enter');
     req.check('closingStockId', 'Parameter closingStockId is missing').exists();
 
-    req.getValidationResult().then(function (result) {
+    req.getValidationResult().then(async function (result) {
         if (!result.isEmpty()) {
             const errors = result.array().map(elem => {
                 return elem.msg;
@@ -90,14 +93,33 @@ router.put('/:closingStockId', async (req, res) => {
         } else {
             semaLog.info('ClosingStockId: ' + req.params.closingStockId);
             semaLog.info('body: ', req.body);
-            delete req.body.id;
-            update(req.body, req.params.closingStockId).then(result => {
-                res.status(200).json(result);
-            })
-                .catch((err) => {
-                    console.log('err', err)
-                    res.status(400).json({ message: 'Invalid Assignment Error' });
-                });
+
+            const cj = await findByKioskIdAndWastageName(req.body.kiosk_id, req.body.product_id, req.body.created_at);
+            console.log('cj', cj)
+            if (cj.length > 0) {
+                delete req.body.id;
+                update(req.body, req.params.closingStockId).then(result => {
+                    res.status(200).json(result);
+                })
+                    .catch((err) => {
+                        console.log('err', err)
+                        res.status(400).json({ message: 'Invalid Assignment Error' });
+                    });
+
+            } else if (cj.length === 0) {
+                let updated_at = req.body.updated_at;
+                delete req.body.updated_at;
+                create({ ...req.body, active: 1, closingStockId: req.params.closingStockId, created_at: updated_at }).then(result => {
+                    res.status(200).json(result);
+                })
+                    .catch((err) => {
+                        console.log('err', err);
+                        res.append('message', 'Contact Support Something not Right');
+                        res.sendStatus(400);
+                    })
+            }
+
+
         }
     });
 });
@@ -127,19 +149,31 @@ function create(body) {
 
 
 function findByKioskIdAndWastageName(kiosk_id, product_id, date) {
-    console.log(kiosk_id + " " + date)
+    console.log(kiosk_id + " " + date + " " + product_id)
     return kioskClosingStockModal.findAll({
         where: {
             kiosk_id: kiosk_id,
             product_id
         }
     }).then(result => {
+        console.log('result', result);
         let ty = JSON.parse(JSON.stringify(result));
+        console.log('ty', ty);
         const er = ty.filter(e => {
-            if (format(new Date(date), 'yyyy-MM-dd') === format(new Date(e.created_at), 'yyyy-MM-dd')) {
+            console.log('date', format(new Date(date), 'yyyy-MM-dd'));
+            console.log('created_at', format(new Date(e.created_at), 'yyyy-MM-dd'));
+            console.log('isSameDay', isSameDay(
+                new Date(date),
+                new Date(e.created_at)
+            ));
+            if (isSameDay(
+                new Date(date),
+                new Date(e.created_at)
+            )) {
                 return { ...e }
             }
         })
+        console.log('er', er);
         return er;
     })
 }
