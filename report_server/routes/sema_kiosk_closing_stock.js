@@ -56,7 +56,7 @@ router.post('/', async (req, res) => {
             res.status(400).send(errors.toString());
         } else {
             semaLog.info('req.body', { ...req.body, active: 1 });
-            const cj = await findByKioskIdAndWastageName(req.body.kiosk_id, req.body.created_at);
+            const cj = await findByKioskIdAndWastageName(req.body.kiosk_id, req.body.product_id, req.body.created_at);
             if (cj.length === 0) {
                 create({ ...req.body, active: 1, created_at: req.body.created_at }).then(result => {
                     res.status(200).json(result);
