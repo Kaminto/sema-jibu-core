@@ -14,22 +14,25 @@ router.get('/', function (req, res) {
     });
 });
 
-router.get('/:kiosk_id', async function (req, res) {
+router.get('/:kiosk_id/:date', async function (req, res) {
 
     let kiosk_id = req.params.kiosk_id;
-    let kiosObj = await kiosk.findOne({ id: kiosk_id });
+    let date = req.params.date;
+    console.log(date)
+    //let kiosObj = await kiosk.findOne({ id: kiosk_id });
     pricing_scheme.hasMany(pricing);
     semaLog.info('Promotion - Enter');
     pricing_scheme.findAll(
         {
             where: {
-                region_id: kiosObj.region_id
+                kiosk_id: kiosk_id
             },
             include: [
                 {
                     where: {
-                        start_date: { [Op.lte]: new Date() },
-                        end_date: { [Op.gte]: new Date() }
+                        created_at: { gte: date },
+                        // start_date: { [Op.lte]: new Date() },
+                        // end_date: { [Op.gte]: new Date() }
                     },
                     model: pricing
                 },]
@@ -67,10 +70,10 @@ router.get('/:kiosk_id', async function (req, res) {
                 }
             })
 
-            return res.status(200).json({ schema: schema[0], pricing });
+            return res.status(200).json({ scheme: schema[0], pricing });
         }
 
-        return res.status(200).json({ schema: {}, pricing: [] });
+        return res.status(200).json({ scheme: {}, pricing: [] });
 
     });
 });

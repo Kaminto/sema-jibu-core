@@ -6,7 +6,7 @@ const router = express.Router();
 const semaLog = require('../seama_services/sema_logger');
 const bodyParser = require('body-parser');
 const Product = require('../model_layer/Product');
-
+const productModal = require('../models').product;
 const list = require('./products/list');
 const post = require('./products/post');
 const update = require('./products/update');
@@ -27,6 +27,27 @@ router.get('/', function(req, res) {
 	else {
 		getProducts(sqlQuery, [], res);
 	}
+});
+
+router.get('/:date', function (req, res) {
+
+    semaLog.info('Products - Enter');
+    let date = req.params.date;
+	productModal.findAll({
+        where: {
+            created_at: {
+                gte: date
+            }
+        }
+    }).then(async products => {
+		let userData = await Promise.all(
+			products.map(async user => {
+				user = await user.toJSON();
+				return { ...user }
+			})
+		);
+        res.status(200).json({ products: userData });
+	});
 });
 
 const getProducts = (query, params, res ) => {

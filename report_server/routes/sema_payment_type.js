@@ -5,9 +5,16 @@ const semaLog = require(`${__basedir}/seama_services/sema_logger`);
 const payment_type = require('../models').payment_type;
 
 /* GET Payment Type Credit in the database. */
-router.get('/', function (req, res) {
-	semaLog.info('Payment Type - Enter');
-	payment_type.findAll().then(paymentType => {
+router.get('/:date', function (req, res) {
+    semaLog.info('Payment Type - Enter');
+    let date = req.params.date;
+	payment_type.findAll({
+        where: {
+            created_at: {
+                gte: date
+            }
+        }
+    }).then(paymentType => {
 		res.send(paymentType)
 	});
 });
