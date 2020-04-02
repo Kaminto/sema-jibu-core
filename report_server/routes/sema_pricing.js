@@ -14,18 +14,17 @@ router.get('/', function (req, res) {
     });
 });
 
-router.get('/:kiosk_id/:date', async function (req, res) {
+router.get('/:region_id/:date', async function (req, res) {
 
-    let kiosk_id = req.params.kiosk_id;
+    let region_id = req.params.region_id;
     let date = req.params.date;
-    console.log(date)
-    //let kiosObj = await kiosk.findOne({ id: kiosk_id });
+    let kiosObj = await kiosk.findOne({ region_id });
     pricing_scheme.hasMany(pricing);
     semaLog.info('Promotion - Enter');
     pricing_scheme.findAll(
         {
             where: {
-                kiosk_id: kiosk_id
+                region_id: region_id
             },
             include: [
                 {
@@ -48,7 +47,7 @@ router.get('/:kiosk_id/:date', async function (req, res) {
                     cogsAmount: element.cogs_amount,
                     productId: element.product_id,
                     salesChannelId: element.sales_channel_id,
-                    siteId: kiosk_id,
+                    siteId: kiosObj.id,
                     active: element.active,
                     start_date: element.start_date,
                     end_date: element.end_date,
