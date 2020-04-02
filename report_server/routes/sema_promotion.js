@@ -25,26 +25,22 @@ router.get('/', function (req, res) {
     });
 });
 
-router.get('/:kiosk_id', function (req, res) {
+router.get('/:kiosk_id/:date', function (req, res) {
 
     kiosk.hasMany(promotion);
     semaLog.info('Promotion - Enter');
     let kiosk_id = req.params.kiosk_id;
-    kiosk.findAll(
-        {
-
-            include: [
-                {
-                    where: {
-                        kiosk_id,
-                    },
-                    model: promotion
-                },]
+    let date = req.params.date;
+	promotion.findAll({
+        where: {
+            kiosk_id,
+            created_at: {
+                gte: date
+            }
         }
-
-    ).then((promotion) => {
+    }).then(promotion => {
         res.status(200).json({ promotion });
-    });
+	});
 });
 
 router.post('/', function (req, res, next) {

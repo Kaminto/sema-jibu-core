@@ -76,10 +76,6 @@ module.exports = models => {
 			name: values.name,
 			sku: values.sku,
 			description: values.description,
-			// category: {
-			// 	id: category.id,
-			// 	name: category.name
-			// },
 			category: category.id,
 			priceAmount: values.price_amount,
 			priceCurrency: values.price_currency,
@@ -88,6 +84,8 @@ module.exports = models => {
 			unitsPerProduct: values.unit_per_product,
 			unitMeasurement: values.unit_measure,
 			costOfGoods: values.cogs_amount,
+			created_at: values.created_at,
+			updated_at: values.updated_at,
 			base64Image: values.base64encoded_image,
 			productMrp: productMrp.map(p => ({
 				id: p.id,
