@@ -19,8 +19,45 @@ var sqlQueryDate = "SELECT * FROM product WHERE updated_at > ? ";
 // on the client side
 var sqlQuery = "SELECT * FROM product";
 
+
+router.get('/admin', async (req, res, next) => {
+	semaLog.info('GET Products - Enter');
+	list.listAll(req.query).then(({ data, total }) => {
+		return res.json({ data, total });
+	})
+		.catch(next);
+});
+
+
+router.put('/admin/:id' , async (req, res, next) => {
+	semaLog.info('PUT Product - Enter');
+	delete req.body.id;
+	update.update(req.body, req.params.id).then(data => {
+		return res.json({ data });
+	})
+		.catch(next);
+}); 
+
+router.post('/admin', async (req, res, next) => {
+	semaLog.info('Post Product - Enter');
+	post.create(req.body).then(({ data, total }) => {
+		return res.json({ data, total });
+	})
+		.catch(next);
+}); 
+
+router.get('/admin/:id', async (req, res, next) => {
+	semaLog.info('GET kiosk - Enter');
+	const id = parseInt(req.params.id);
+	return findById.findByPk(id)
+		.then(data => res.status(200).json({ data }))
+		.catch(Sequelize.EmptyResultError, handleError(res, 404))
+		.catch(next);
+});
+
+
 router.get('/', function(req, res) {
-	semaLog.info('GET products - Enter');
+	semaLog.info('GET products1 - Enter');
 	if (req.query.hasOwnProperty("updated-date")) {
 		getProducts(sqlQueryDate, [getUTCDate(new Date( req.query["updated-date"]))], res);
 	}
@@ -31,7 +68,7 @@ router.get('/', function(req, res) {
 
 router.get('/:date', function (req, res) {
 
-    semaLog.info('Products - Enter');
+    semaLog.info('Products3 - Enter');
     let date = req.params.date;
 	productModal.findAll({
         where: {
@@ -89,41 +126,6 @@ const getUTCDate = (date) => {
 		date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
 
 };
-
-router.get('/admin', async (req, res, next) => {
-	semaLog.info('GET kiosks - Enter');
-	list.listAll(req.query).then(({ data, total }) => {
-		return res.json({ data, total });
-	})
-		.catch(next);
-});
-
-
-router.put('/admin/:id' , async (req, res, next) => {
-	semaLog.info('PUT Product - Enter');
-	delete req.body.id;
-	update.update(req.body, req.params.id).then(data => {
-		return res.json({ data });
-	})
-		.catch(next);
-}); 
-
-router.post('/admin', async (req, res, next) => {
-	semaLog.info('Post Product - Enter');
-	post.create(req.body).then(({ data, total }) => {
-		return res.json({ data, total });
-	})
-		.catch(next);
-}); 
-
-router.get('/admin/:id', async (req, res, next) => {
-	semaLog.info('GET kiosk - Enter');
-	const id = parseInt(req.params.id);
-	return findById.findByPk(id)
-		.then(data => res.status(200).json({ data }))
-		.catch(Sequelize.EmptyResultError, handleError(res, 404))
-		.catch(next);
-});
 
 function handleError(res, statusCode, message) {
     return (error) => {

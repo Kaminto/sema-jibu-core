@@ -182,7 +182,7 @@ const deleteTopUp = (query, params, res) => {
     });
 
 };
-
+ 
 router.post('/', async (req, res) => {
     semaLog.info('CREATE sema_customer - Enter');
     semaLog.info(req.body);
