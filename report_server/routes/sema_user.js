@@ -191,6 +191,17 @@ router.get('/admin/:id', async (req, res, next) => {
 });
 
 
+router.post('/admin/userStatus', async (req, res, next) => {
+	semaLog.info('Update user Status - Enter');
+	console.log('body', req.body)
+	db.user.update({
+		active: !req.body.active
+	}, { where: { id: req.body.id } }).then(data => res.status(200).json({ data }))
+	 	.catch(error => handleError(res, 400))
+	
+});
+
+
 router.post('/admin', async (req, res) => {
 	semaLog.info('create user - enter');
 	console.log('body', req.body)

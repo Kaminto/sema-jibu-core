@@ -8,32 +8,7 @@ const bodyParser = require('body-parser');
 
 router.use(bodyParser.urlencoded({ extended: false }));
   
-/* GET customers in the database. */
 
-// const sqlSiteIdOnly =
-// 	'SELECT * ' +
-// 	'FROM customer_account ' +
-// 	"WHERE kiosk_id = ? AND active = b'1'";
-// const sqlBeginDateOnly =
-// 	'SELECT * ' +
-// 	'FROM customer_account ' +
-// 	"WHERE kiosk_id = ? AND active = b'1'" +
-// 	'AND created_at >= ?';
-// const sqlEndDateOnly =
-// 	'SELECT * ' +
-// 	'FROM customer_account ' +
-// 	"WHERE kiosk_id = ? AND active = b'1'" +
-// 	'AND created_at <= ?';
-// const sqlBeginEndDate =
-// 	'SELECT * ' +
-// 	'FROM customer_account ' +
-// 	"WHERE kiosk_id = ? AND active = b'1'" +
-// 	'AND created_at BETWEEN ? AND ?';
-// const sqlUpdatedDate =
-// 	'SELECT * ' +
-// 	'FROM customer_account ' +
-// 	'WHERE kiosk_id = ? ' +
-// 	'AND updated_at > ?';
 const sqlSiteIdOnly =
 	'SELECT * ' +
 	'FROM customer_account ' +
