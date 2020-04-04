@@ -55,6 +55,7 @@ module.exports = function(sequelize, DataTypes) {
 	}, {
 		tableName: 'customer_credit',
 		timestamps: false,
+		underscored: true
 	});
 
 	return customer_credit;
