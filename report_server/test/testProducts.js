@@ -36,7 +36,7 @@ describe('Testing Products API', function () {
 						expect(res.body.products).to.be.an('array');
 						expect(res.body.products.length).to.be.equal(2);
 						expect(res.body.products[0].description).to.be.equal("Description Product-1");
-						expect(res.body.products[0].updatedDate).to.be.equal("2018-01-01T08:00:00.000Z");
+						expect(res.body.products[0].updated_at).to.be.equal("2018-01-01T08:00:00.000Z");
 						expect(res.body.products[0].priceCurrency).to.be.equal("USD");
 						expect(res.body.products[0].priceAmount).to.be.equal(5.00);
 						expect(res.body.products[0].unitPerProduct).to.be.equal(1);

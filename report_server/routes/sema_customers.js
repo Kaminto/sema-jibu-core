@@ -7,7 +7,7 @@ const customerModal = require('../models').customer_account;
 const bodyParser = require('body-parser');
 
 router.use(bodyParser.urlencoded({ extended: false }));
-  
+
 
 const sqlSiteIdOnly =
 	'SELECT * ' +
@@ -32,7 +32,7 @@ const sqlBeginEndDate =
 	"WHERE kiosk_id = ? AND active = b'1'" +
 	'AND created_at BETWEEN ? AND ?' +
 	' ORDER BY name ASC ';
-const sqlUpdatedDate =
+const sqlupdated_at =
 	'SELECT * ' +
 	'FROM customer_account ' +
 	'WHERE kiosk_id = ? ' +
@@ -66,8 +66,8 @@ router.put('/:id', function (req, res, next) {
 			);
 			res.status(400).send(errors.toString());
 		} else {
-			
-			customerModal.update({ 
+
+			customerModal.update({
 				name: req.body.name,
 				sales_channel_id: req.body.salesChannelId,
 				customer_type_id: req.body.customerTypeId,
@@ -78,11 +78,11 @@ router.put('/:id', function (req, res, next) {
 				updated_at: req.body.gpsCoordinates,
 				phone_number: req.body.phoneNumber,
 				second_phone_number: req.body.secondPhoneNumber,
-				frequency:req.body.frequency,
-				updated_at:req.body.updatedDate,
+				frequency: req.body.frequency,
+				updated_at: req.body.updated_at,
 				active: req.body.active ? 1 : 0,
 				is_delete: req.body.is_delete,
-			
+
 			}, { where: { id: req.params.id } }).then(result => {
 				res.status(200).json(result);
 			})
@@ -95,7 +95,7 @@ router.put('/:id', function (req, res, next) {
 	})
 
 });
- 
+
 
 router.delete('/:id', async (req, res) => {
 	semaLog.info('DELETE sema_customer - Enter');
@@ -208,7 +208,7 @@ router.post('/', async (req, res) => {
 
 			let postSqlParams = [
 				customer.customerId,
-				getUTCDate(customer.createdDate),
+				getUTCDate(customer.created_at),
 				customer.name,
 				customer.customerTypeId,
 				customer.salesChannelId,
@@ -262,18 +262,18 @@ router.get('/', function (req, res) {
 		} else {
 			semaLog.info('Site-id: ' + req.query['site-id']);
 			if (req.query.hasOwnProperty('updated-date')) {
-				let updatedDate = getUTCDate(
+				let updated_at = getUTCDate(
 					new Date(req.query['updated-date'])
 				);
 
-				if (!isNaN(updatedDate)) {
+				if (!isNaN(updated_at)) {
 					getCustomers(
-						sqlUpdatedDate,
-						[req.query['site-id'], updatedDate],
+						sqlupdated_at,
+						[req.query['site-id'], updated_at],
 						res
 					);
 				} else {
-					semaLog.error('GET Customers - Invalid updatedDate');
+					semaLog.error('GET Customers - Invalid updated_at');
 					res.status(400).send('Invalid Date');
 				}
 			} else if (
@@ -340,7 +340,10 @@ router.get('/:kiosk_id/:date', function (req, res) {
 		},
 	}).then(result => {
 		semaLog.info('GET Customers - success');
-		res.json({customers: result});
+		let result2 = JSON.parse(JSON.stringify(result)).map(e => {
+			return { ...e, customerId: e.id };
+		})
+		res.json({ customers: result2 });
 	}).catch(function (err) {
 		semaLog.error('GET Customers - failed', { err });
 		res.json({ error: err });
