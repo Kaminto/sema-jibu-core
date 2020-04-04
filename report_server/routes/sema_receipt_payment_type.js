@@ -74,10 +74,10 @@ router.post('/', function (req, res, next) {
 			receipt_payment_type.create({ ...req.body, active: 1 }).then(result => {
 				res.status(200).json(result);
 			})
-				.catch(Sequelize.ForeignKeyConstraintError, function handleError() {
+				.catch(error => {
+					console.log('error', error)
 					res.status(400).json({ message: 'Invalid Assignment Error' });
 				})
-				.catch(next);
 
 		}
 	})

@@ -31,14 +31,14 @@ const sqlBeginEndDate =
     'FROM customer_credit ' +
     "WHERE customer_account_id = ? AND active = b'1'" +
     'AND created_at BETWEEN ? AND ?';
-const sqlUpdatedDate =
+const sqlupdated_at =
     'SELECT * ' +
     'FROM customer_credit ' +
     'WHERE customer_account_id = ? ' +
     'AND updated_at > ?';
 
 
-    const sqlAllTopsUpdatedDate =
+    const sqlAllTopsupdated_at =
     'SELECT * ' +
     'FROM customer_credit ' +
     'WHERE  updated_at > ?';
@@ -274,18 +274,18 @@ router.get('/allTopUps', function (req, res) {
             res.status(400).send(errors.toString());
         } else {
             if (req.query.hasOwnProperty('updated-date')) {
-                let updatedDate = getUTCDate(
+                let updated_at = getUTCDate(
                     new Date(req.query['updated-date'])
                 );
 
-                if (!isNaN(updatedDate)) {
+                if (!isNaN(updated_at)) {
                     getTopUps(
-                        sqlAllTopsUpdatedDate,
-                        [updatedDate],
+                        sqlAllTopsupdated_at,
+                        [updated_at],
                         res
                     );
                 } else {
-                    semaLog.error('GET Credits - Invalid updatedDate');
+                    semaLog.error('GET Credits - Invalid updated_at');
                     res.status(400).send('Invalid Date');
                 }
             } else if (

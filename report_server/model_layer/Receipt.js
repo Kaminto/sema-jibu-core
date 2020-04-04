@@ -2,8 +2,8 @@ class Receipt {
 
 	constructor(jsonBody){
 		this.id = jsonBody["id"];
-		this.createdDate = new Date( jsonBody["createdDate"]);
-		this.updatedDate = this.createdDate;
+		this.created_at = new Date( jsonBody["created_at"]);
+		this.updated_at = this.created_at;
 		this.currencyCode = jsonBody["currencyCode"];
 		this.customerId = jsonBody["customerId"];
 		this.is_delete = jsonBody["is_delete"];
@@ -36,8 +36,8 @@ class Receipt {
 		this.receiptId = jsonBody["receiptId"];
 		this.products = jsonBody["products"].map( product =>{
 			return {
-				createdDate: this.createdDate,
-				updatedDate: this.updatedDate,
+				created_at: this.created_at,
+				updated_at: this.updated_at,
 				currencyCode: this.currencyCode,
 				priceTotal:product.priceTotal,
 				quantity:product.quantity,
@@ -57,7 +57,7 @@ class Receipt {
 	// classToPlain() {
 	// 	return {
 	// 		id:this._id,
-	// 		createdDate:this._createdDate,
+	// 		created_at:this._created_at,
 	// 		currencyCode: this._currencyCode,
 	// 		customerId: this._customerId,
 	// 		amountCash: this._amountCash,
@@ -65,7 +65,7 @@ class Receipt {
 	// 		amountLoan: this._amountLoan,
 	// 		receiptId: this._receiptId,
 	// 		siteId: this._siteId,
-	// 		createdDate: this._createdDate,
+	// 		created_at: this._created_at,
 	// 		total: this._totalSales,
 	// 		receiptId: this._cogs,
 	// 		products: this._products,

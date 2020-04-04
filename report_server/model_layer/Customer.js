@@ -18,8 +18,8 @@ class Customer {
 		this._siteId = -1;
 		this._phoneNumber = '';
 		this._secondPhoneNumber='';
-		this._createdDate = null;
-		this._updatedDate = null;
+		this._created_at = null;
+		this._updated_at = null;
 		this._gender = null;
 		this._dueAmount = 0;
 
@@ -29,8 +29,8 @@ class Customer {
 
 	databaseToClass(res) {
 		this._customerId = res['id'];
-		this._createdDate = new Date(res['created_at']);
-		this._updatedDate = new Date(res['updated_at']);
+		this._created_at = new Date(res['created_at']);
+		this._updated_at = new Date(res['updated_at']);
 		this._active = res['active'][0] === 1 ? true : false;
 		this._address = res['address_line1'];
 		this._name = res['name'];
@@ -73,15 +73,15 @@ class Customer {
 		} else {
 			this._customerId = uuidv1();
 		}
-		if (req.body.hasOwnProperty('createdDate')) {
-			this._createdDate = new Date(req.body['createdDate']);
+		if (req.body.hasOwnProperty('created_at')) {
+			this._created_at = new Date(req.body['created_at']);
 		} else {
-			this._createdDate = new Date();
+			this._created_at = new Date();
 		}
-		if (req.body.hasOwnProperty('updatedDate')) {
-			this._updatedDate = new Date(req.body['updatedDate']);
+		if (req.body.hasOwnProperty('updated_at')) {
+			this._updated_at = new Date(req.body['updated_at']);
 		} else {
-			this._updatedDate = this._createdDate;
+			this._updated_at = this._created_at;
 		}
 
 		if (req.body.hasOwnProperty('frequency')) {
@@ -122,10 +122,10 @@ class Customer {
 		if (requestCustomer.hasOwnProperty('secondPhoneNumber'))
 			this._secondPhoneNumber = requestCustomer.secondPhoneNumber;
 
-		if (requestCustomer.hasOwnProperty('updatedDate')) {
-			this._updatedDate = new Date(requestCustomer.updatedDate);
+		if (requestCustomer.hasOwnProperty('updated_at')) {
+			this._updated_at = new Date(requestCustomer.updated_at);
 		} else {
-			this._updatedDate = new Date();
+			this._updated_at = new Date();
 		}
 		if (requestCustomer.hasOwnProperty('salesChannelId')) {
 			this._salesChannelId = requestCustomer.salesChannelId;
@@ -154,8 +154,8 @@ class Customer {
 	classToPlain() {
 		return {
 			customerId: this._customerId,
-			createdDate: this._createdDate.toISOString(),
-			updatedDate: this._updatedDate.toISOString(),
+			created_at: this._created_at.toISOString(),
+			updated_at: this._updated_at.toISOString(),
 			active: this._active,
 			address: this._address,
 			name: this._name,
@@ -192,11 +192,11 @@ class Customer {
 	get phoneNumber() {
 		return this._phoneNumber;
 	}
-	get createdDate() {
-		return this._createdDate;
+	get created_at() {
+		return this._created_at;
 	}
-	get updatedDate() {
-		return this._updatedDate;
+	get updated_at() {
+		return this._updated_at;
 	}
 	get salesChannelId() {
 		return this._salesChannelId;

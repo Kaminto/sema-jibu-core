@@ -75,7 +75,7 @@ router.post('/', async (req, res) => {
 	req.check("id", "id is missing").exists();
 	req.check("currency_code", "currency_code is missing").exists();
 	// req.check("customerId", "customerId is missing").exists();
-	// req.check("createdDate", "createdDate is missing").exists();
+	// req.check("created_at", "created_at is missing").exists();
 	// req.check("siteId", "siteId is missing").exists();
 	req.check("payment_type", "payment_type is missing").exists();
 	req.check("sales_channel_id", "sales_channel_id is missing").exists();
