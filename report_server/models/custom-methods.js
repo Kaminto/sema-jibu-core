@@ -72,6 +72,7 @@ module.exports = models => {
 
 		return {
 			id: values.id,
+			productId: values.id,
 			active: !!values.active,
 			name: values.name,
 			sku: values.sku,
