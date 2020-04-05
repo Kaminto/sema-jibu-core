@@ -72,6 +72,7 @@ module.exports = models => {
 
 		return {
 			id: values.id,
+			productId: values.id,
 			active: !!values.active,
 			name: values.name,
 			sku: values.sku,
@@ -86,6 +87,7 @@ module.exports = models => {
 			costOfGoods: values.cogs_amount,
 			created_at: values.created_at,
 			updated_at: values.updated_at,
+			wastageName: values.wastage_name,
 			base64Image: values.base64encoded_image,
 			productMrp: productMrp.map(p => ({
 				id: p.id,
