@@ -36,7 +36,11 @@ module.exports = function(sequelize, DataTypes) {
         due_amount: {
 			type: DataTypes.DECIMAL,
 			allowNull: false,
-        },
+		},
+		balance: {
+			type: DataTypes.DECIMAL,
+			allowNull: false,
+		},
 		created_at: {
 			type: DataTypes.DATE,
 			allowNull: false,
