@@ -83,6 +83,7 @@ router.put('/:id', async (req, res) => {
                     let customerParams = [
                         req.body.topup ? req.body.topup : result.topup,
                         req.body.balance ? req.body.balance : result.balance,
+                        receipt_id ? req.body.receipt_id : result.receipt_id,
                     ];
 
                     // Active is set via a 'bit;
