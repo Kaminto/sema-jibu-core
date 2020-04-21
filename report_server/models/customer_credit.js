@@ -37,6 +37,14 @@ module.exports = function(sequelize, DataTypes) {
 				key: 'id'
 			}
 		},
+		receipt_id: {
+			type: DataTypes.STRING(255),
+			allowNull: true,
+			references: {
+				model: 'receipt',
+				key: 'id'
+			}
+		},
 		active: {
 			type: DataTypes.BOOLEAN,
 			allowNull: false,

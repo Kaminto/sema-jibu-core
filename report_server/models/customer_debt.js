@@ -37,6 +37,14 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.DECIMAL,
 			allowNull: false,
 		},
+		receipt_id: {
+			type: DataTypes.STRING(255),
+			allowNull: true,
+			references: {
+				model: 'receipt',
+				key: 'id'
+			}
+		},
 		balance: {
 			type: DataTypes.DECIMAL,
 			allowNull: false,
