@@ -1,6 +1,6 @@
 const express = require('express');
 const Sequelize = require('sequelize');
-var format = require('date-fns/format')
+var format = require('date-fns/format');
 const router = express.Router();
 const semaLog = require(`${__basedir}/seama_services/sema_logger`);
 const meterReadingModal = require('../models').meter_reading;
