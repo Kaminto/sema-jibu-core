@@ -3,17 +3,17 @@ const router = express.Router();
 const semaLog = require('../seama_services/sema_logger');
 const ReminderModal = require('../models').reminders;
 
-const sqlDeleteReminder = 'DELETE FROM reminders WHERE reminderId = ?';
-const sqlGetReminderById = 'SELECT * FROM reminders WHERE reminderId = ?';
+const sqlDeleteReminder = 'DELETE FROM reminders WHERE reminder_id = ?';
+const sqlGetReminderById = 'SELECT * FROM reminders WHERE reminder_id = ?';
 
 const sqlInsertReminder =
 	'INSERT INTO reminders ' +
-	'(reminderId, created_at, customer_account_id, frequency, show_reminders, reminder_date, kiosk_id, active ) ' +
+	'(reminder_id, created_at, customer_account_id, frequency, show_reminders, reminder_date, kiosk_id, active ) ' +
 	'VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 
-router.put('/:reminderId', async (req, res) => {
+router.put('/:reminder_id', async (req, res) => {
 	semaLog.info('PUT reminders - Enter');
-	req.check('reminderId', 'Parameter reminderId is missing').exists();
+	req.check('reminder_id', 'Parameter reminder_id is missing').exists();
 	req.getValidationResult().then(function (result) {
 		if (!result.isEmpty()) {
 			const errors = result.array().map(elem => {
@@ -22,8 +22,8 @@ router.put('/:reminderId', async (req, res) => {
 			semaLog.error('PUT customer, Validation error' + errors.toString());
 			res.status(400).send(errors.toString());
 		} else {
-			semaLog.info('ReminderId: ' + req.params.reminderId);
-			findReminder(sqlGetReminderById, [req.params.reminderId]).then(
+			semaLog.info('ReminderId: ' + req.params.reminder_id);
+			findReminder(sqlGetReminderById, [req.params.reminder_id]).then(
 				function (result) {
 					// Active is set via a 'bit;
 					let active = 0;
@@ -41,7 +41,7 @@ router.put('/:reminderId', async (req, res) => {
 						kiosk_id: req.body.kiosk_id,
 						active
 					},
-						{ where: { reminderId: req.params.reminderId } }
+						{ where: { reminder_id: req.params.reminder_id } }
 					).then(result => {
 						if (Array.isArray(result) && result.length >= 1) {
 							semaLog.info('updateReminder - succeeded');
@@ -54,7 +54,7 @@ router.put('/:reminderId', async (req, res) => {
 				function (reason) {
 					res.status(404).send(
 						'PUT customer DEBT: Could not find customer debt with id ' +
-						req.params.reminderId
+						req.params.reminder_id
 					);
 				}
 			);
@@ -62,10 +62,10 @@ router.put('/:reminderId', async (req, res) => {
 	});
 });
 
-router.delete('/:reminderId', async (req, res) => {
+router.delete('/:reminder_id', async (req, res) => {
 	semaLog.info('DELETE sema_customer - Enter');
 
-	semaLog.info(req.params.reminderId);
+	semaLog.info(req.params.reminder_id);
 
 	req.getValidationResult().then(function (result) {
 		if (!result.isEmpty()) {
@@ -75,12 +75,12 @@ router.delete('/:reminderId', async (req, res) => {
 			semaLog.error('Delete customer. Validation error');
 			res.status(400).send(errors.toString());
 		} else {
-			findReminder(sqlGetReminderById, [req.params.reminderId]).then(
+			findReminder(sqlGetReminderById, [req.params.reminder_id]).then(
 				function (result) {
 					console.log(result);
 					semaLog.info('result - Enter', result);
 
-					deleteReminder(sqlDeleteReminder, [req.params.reminderId], res);
+					deleteReminder(sqlDeleteReminder, [req.params.reminder_id], res);
 				},
 				function (reason) {
 					res.status(404).send(
@@ -127,7 +127,7 @@ router.post('/', async (req, res) => {
 	//var postSqlParams = [];
 
 	semaLog.info(req.body);
-	req.check('reminderId', 'Parameter reminderId is missing').exists();
+	req.check('reminder_id', 'Parameter reminder_id is missing').exists();
 	req.check('customer_account_id', 'Parameter customer_account_id is missing').exists();
 	req.check('due_amount', 'Parameter due_amount is missing').exists();
 	req.check('kiosk_id', 'Parameter kiosk_id is missing').exists();
@@ -144,7 +144,7 @@ router.post('/', async (req, res) => {
 
 
 			let postSqlParams = [
-				req.body.reminderId,
+				req.body.reminder_id,
 				getUTCDate(new Date()),
 				req.body.customer_account_id,
 				req.body.frequency,
