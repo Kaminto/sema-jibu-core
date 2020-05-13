@@ -45,8 +45,8 @@ const sqlupdated_at =
 
 
 ///
-const sqlDeleteTopUp = 'DELETE FROM customer_credit WHERE id = ?';
-const sqlGetTopUpById = 'SELECT * FROM customer_credit WHERE id = ?';
+const sqlDeleteTopUp = 'DELETE FROM customer_credit WHERE top_up_id = ?';
+const sqlGetTopUpById = 'SELECT * FROM customer_credit WHERE top_up_id = ?';
 
 const sqlInsertTopUp =
     'INSERT INTO customer_credit ' +
