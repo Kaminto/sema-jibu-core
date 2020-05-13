@@ -8,7 +8,7 @@ module.exports = function(sequelize, DataTypes) {
 			primaryKey: true,
 			autoIncrement: true
 		},
-		topUpId: {
+		top_up_id: {
 			type: DataTypes.STRING(255),
 			allowNull: false,
 			unique: true
