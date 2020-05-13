@@ -27,8 +27,8 @@ module.exports = function(sequelize, DataTypes) {
         },
         balance: {
 			type: DataTypes.DECIMAL,
-			allowNull: false,
-		},
+			allowNull: true,
+		}, 
 		kiosk_id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,

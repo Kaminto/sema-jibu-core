@@ -47,7 +47,7 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		balance: {
 			type: DataTypes.DECIMAL,
-			allowNull: false,
+			allowNull: true,
 		},
 		created_at: {
 			type: DataTypes.DATE,
