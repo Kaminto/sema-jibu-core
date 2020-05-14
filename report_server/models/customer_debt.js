@@ -49,6 +49,10 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.DECIMAL,
 			allowNull: true,
 		},
+		notes: {
+			type: DataTypes.STRING(255),
+			allowNull: true,
+		},
 		created_at: {
 			type: DataTypes.DATE,
 			allowNull: false,

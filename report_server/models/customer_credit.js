@@ -13,6 +13,10 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: false,
 			unique: true
 		},
+		notes: {
+			type: DataTypes.STRING(255),
+			allowNull: true,
+		},
 		customer_account_id: {
 			type: DataTypes.STRING,
 			allowNull: false,
