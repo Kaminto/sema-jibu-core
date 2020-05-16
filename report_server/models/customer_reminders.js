@@ -9,7 +9,7 @@ module.exports = function (sequelize, DataTypes) {
 		},
 		reminder_id: {
 			type: DataTypes.STRING(255),
-			allowNull: false
+			allowNull: true
 		},
 		kiosk_id: {
 			type: DataTypes.BIGINT,
