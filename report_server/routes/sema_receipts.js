@@ -16,7 +16,7 @@ const validator = require('validator');
 const moment = require('moment');
 
 router.get('/:siteId', (req, res) => {
-	var started = new Date();
+	// var started = new Date();
 	R.belongsTo(CustomerAccount);
 	R.hasMany(ReceiptLineItem);
 	ReceiptLineItem.belongsTo(Product);
@@ -41,10 +41,10 @@ router.get('/:siteId', (req, res) => {
 			 					attributes: { exclude: 'base64encoded_image' }
 			}]
 			}]
-	}).then(result => {
-		res.send(result);
-		console.log('took', (new Date().getTime() - started.getTime()), 'ms');
-	});
+	}).then(result =>
+		res.send(result)
+		// console.log('took', (new Date().getTime() - started.getTime()), 'ms');
+	);
 });
 
 router.put('/:siteId', async (req, res) => {
