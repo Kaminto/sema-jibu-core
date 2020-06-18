@@ -16,6 +16,7 @@ const validator = require('validator');
 const moment = require('moment');
 
 router.get('/:siteId', (req, res) => {
+	let started = new Date();
 	R.belongsTo(CustomerAccount);
 	R.hasMany(ReceiptLineItem);
 	ReceiptLineItem.belongsTo(Product);
@@ -40,7 +41,11 @@ router.get('/:siteId', (req, res) => {
 			// 					attributes: { exclude: 'base64encoded_image' }
 			//	}]
 			}]
-	}).then(result => res.send(result));
+	// }).then(result => res.send(result));
+	}).then(result => {
+		res.send(result);
+		console.log('took', (new Date().getTime() - started.getTime()), 'ms');
+	});
 });
 
 router.put('/:siteId', async (req, res) => {
@@ -105,7 +110,7 @@ router.post('/', async (req, res) => {
 					return res.status(400).send({ msg: "Bad request, missing parts of receipt.product." });
 				}
 			}
-  
+
 		//	db.sequelize.transaction(transaction => {
 				return R.create({ ...req.body, active: 1 }).then(result => {
 

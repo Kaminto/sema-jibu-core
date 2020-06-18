@@ -11,12 +11,12 @@ const payment_type = require('../models').payment_type;
 const Product = require(`${__basedir}/models`).product;
 const db = require('../models')
 const Sequelize = require('sequelize');
-const Op = Sequelize.Op
+const Op = Sequelize.Op;
 const validator = require('validator');
 const moment = require('moment');
 
 router.get('/:siteId', (req, res) => {
-	// var started = new Date();
+	let started = new Date();
 	R.belongsTo(CustomerAccount);
 	R.hasMany(ReceiptLineItem);
 	ReceiptLineItem.belongsTo(Product);
@@ -41,15 +41,15 @@ router.get('/:siteId', (req, res) => {
 			 					attributes: { exclude: 'base64encoded_image' }
 			}]
 			}]
-//	}).then(result => {
-//		res.send(result);
-//		console.log('took', (new Date().getTime() - started.getTime()), 'ms');
-//	});
+	}).then(result => {
+		res.send(result);
+		console.log('took', (new Date().getTime() - started.getTime()), 'ms');
+	});
 
-	}).then(result =>
-		res.send(result)
-		// console.log('took', (new Date().getTime() - started.getTime()), 'ms');
-	);
+	// }).then(result =>
+	// 	res.send(result)
+	// 	// console.log('took', (new Date().getTime() - started.getTime()), 'ms');
+	// );
 });
 
 router.put('/:siteId', async (req, res) => {
