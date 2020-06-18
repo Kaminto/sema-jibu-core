@@ -43,13 +43,8 @@ router.get('/:siteId', (req, res) => {
 			}]
 	}).then(result => {
 		res.send(result);
-		console.log('took', (new Date().getTime() - started.getTime()), 'ms');
+		semaLog.info('took ' + (new Date().getTime() - started.getTime()) +  ' ms');
 	});
-
-	// }).then(result =>
-	// 	res.send(result)
-	// 	// console.log('took', (new Date().getTime() - started.getTime()), 'ms');
-	// );
 });
 
 router.put('/:siteId', async (req, res) => {
