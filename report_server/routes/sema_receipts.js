@@ -30,15 +30,15 @@ router.get('/:siteId', (req, res) => {
 			},
 		},
 		include: [
-			//{
-			//	model: CustomerAccount
-			//},
+			{
+				model: CustomerAccount
+			},
 			{
 				model: ReceiptLineItem,
-			//	include: [{
-			//		model: Product,
-			// 					attributes: { exclude: 'base64encoded_image' }
-			//	}]
+			include: [{
+					model: Product,
+			 					attributes: { exclude: 'base64encoded_image' }
+			}]
 			}]
 	}).then(result => res.send(result));
 });
