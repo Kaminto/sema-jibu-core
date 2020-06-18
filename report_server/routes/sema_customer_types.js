@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const semaLog = require(`${__basedir}/seama_services/sema_logger`);
 const CustomerType = require('../model_layer/CustomerType');
-
-router.get('/', function(req, res) {
+const customer_type = require('../models').customer_type;
+router.get('/:h/:g', function(req, res) {
 	semaLog.info('GET customer types - Enter');
 	__pool.getConnection((err, connection) => {
 		if (err) {
@@ -22,6 +22,39 @@ router.get('/', function(req, res) {
 				res.json({ customerTypes: result.map( (customerType) => { return (new CustomerType(customerType)).classToPlain()}) });
 			}
 		});
+	});
+});
+
+
+router.get('/:date', function (req, res) {
+	semaLog.info('GET Credits - Enter');
+	let date = req.params.date;
+
+	req.getValidationResult().then(function (result) {
+		if (!result.isEmpty()) {
+			const errors = result.array().map(elem => {
+				return elem.msg;
+			});
+			semaLog.error('GET Credits validation error: ', errors);
+			res.status(400).send(errors.toString());
+		} else {
+
+			customer_type.findAll(
+				{
+					where: {
+						created_at: {
+							gte: date
+						}
+					}
+				}).then(customerTypes => {
+					res.status(200).json({ customerTypes });
+				})
+				.catch(function (err) {
+					console.log("err", err);
+					res.status(400).json({ error: err });
+				});
+
+		}
 	});
 });
 

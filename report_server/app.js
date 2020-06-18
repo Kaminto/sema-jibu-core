@@ -24,6 +24,7 @@ var sema_products = require('./routes/sema_products');
 var sema_product_category = require('./routes/sema_product_category');
 var sema_overview = require('./routes/sema_overview');
 var sema_receipts = require('./routes/sema_receipts');
+var sema_new_receipts = require('./routes/sema_receipts_new');
 var sema_sales_channels = require('./routes/sema_sales_channels');
 var sema_customer_types = require('./routes/sema_customer_types');
 var sema_product_mrps = require('./routes/sema_product_mrps');
@@ -143,12 +144,14 @@ app.use('/sema/roles', seama_roles);
 //app.use('/sema/kiosks', isAuthenticated, seama_kiosks);
 app.use('/sema/site/customers/', sema_customers);
 app.use('/sema/site/receipts/', sema_receipts);
+app.use('/sema/site/newreceipts/', sema_new_receipts);
 app.use('/sema/products/', sema_products);
 app.use('/sema/product_category/', sema_product_category);
 app.use('/sema/overview/', sema_overview);
 
-app.use('/sema/sales-channels/', isAuthenticated, sema_sales_channels);
-app.use('/sema/customer-types/', isAuthenticated, sema_customer_types);
+app.use('/sema/sales-channels/', sema_sales_channels);
+app.use('/sema/customer-types/', sema_customer_types);
+//app.use('/sema/customer-types/', isAuthenticated, sema_customer_types);
 app.use('/sema/site/product-mrps/', isAuthenticated, sema_product_mrps);
 // TODO - Add 'isAuthenticated' below!!
 app.use('/sema/dashboard/site/sales-by-channel-history/', sema_sales_by_channels_history);
@@ -187,8 +190,8 @@ app.use(
 	isAuthenticated,
 	sema_product_categories
 );
-app.use('/sema/api/sales-channel', isAuthenticated, sema_admin_sales_channel);
-
+//app.use('/sema/api/sales-channel', isAuthenticated, sema_admin_sales_channel);
+app.use('/sema/api/sales-channel', sema_admin_sales_channel);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
 	var err = new Error('Not Found');

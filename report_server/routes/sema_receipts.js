@@ -16,6 +16,7 @@ const validator = require('validator');
 const moment = require('moment');
 
 router.get('/:siteId', (req, res) => {
+	var started = new Date();
 	R.belongsTo(CustomerAccount);
 	R.hasMany(ReceiptLineItem);
 	ReceiptLineItem.belongsTo(Product);
@@ -35,12 +36,15 @@ router.get('/:siteId', (req, res) => {
 			},
 			{
 				model: ReceiptLineItem,
-				include: [{
+			include: [{
 					model: Product,
-					// 					attributes: { exclude: 'base64encoded_image' }
-				}]
+			 					attributes: { exclude: 'base64encoded_image' }
 			}]
-	}).then(result => res.send(result));
+			}]
+	}).then(result => {
+		res.send(result);
+		semaLog.info('took ' + (new Date().getTime() - started.getTime()) +  ' ms');
+	});
 });
 
 router.put('/:siteId', async (req, res) => {
@@ -75,7 +79,7 @@ router.post('/', async (req, res) => {
 	req.check("id", "id is missing").exists();
 	req.check("currency_code", "currency_code is missing").exists();
 	// req.check("customerId", "customerId is missing").exists();
-	// req.check("createdDate", "createdDate is missing").exists();
+	// req.check("created_at", "created_at is missing").exists();
 	// req.check("siteId", "siteId is missing").exists();
 	req.check("payment_type", "payment_type is missing").exists();
 	req.check("sales_channel_id", "sales_channel_id is missing").exists();
@@ -105,7 +109,7 @@ router.post('/', async (req, res) => {
 					return res.status(400).send({ msg: "Bad request, missing parts of receipt.product." });
 				}
 			}
-  
+
 		//	db.sequelize.transaction(transaction => {
 				return R.create({ ...req.body, active: 1 }).then(result => {
 

@@ -31,37 +31,27 @@ const sqlBeginEndDate =
     'FROM customer_credit ' +
     "WHERE customer_account_id = ? AND active = b'1'" +
     'AND created_at BETWEEN ? AND ?';
-const sqlUpdatedDate =
+const sqlupdated_at =
     'SELECT * ' +
     'FROM customer_credit ' +
     'WHERE customer_account_id = ? ' +
     'AND updated_at > ?';
 
 
-    const sqlAllTopsUpdatedDate =
+const sqlAllTopsupdated_at =
     'SELECT * ' +
     'FROM customer_credit ' +
     'WHERE  updated_at > ?';
 
 
 ///
-const sqlDeleteTopUp = 'DELETE FROM customer_credit WHERE id = ?';
-const sqlGetTopUpById = 'SELECT * FROM customer_credit WHERE id = ?';
+const sqlDeleteTopUp = 'DELETE FROM customer_credit WHERE top_up_id = ?';
+const sqlGetTopUpById = 'SELECT * FROM customer_credit WHERE top_up_id = ?';
 
-const sqlInsertTopUp =
-    'INSERT INTO customer_credit ' +
-    '(topUpId, created_at, customer_account_id, topup, balance, active ) ' +
-    'VALUES (?, ?, ?, ?, ?, ?)';
-
-// const sqlUpdateTopUp = 	"UPDATE customer_credit " +
-// 	"SET name = ?, sales_channel_id = ?, customer_type_id = ?," +
-// 		"due_amount = ?, address_line1 = ?, gps_coordinates = ?, " +
-// 		"phone_number = ?, active = ? " +
-// 	"WHERE id = ?";
 const sqlUpdateTopUp =
     'UPDATE customer_credit ' +
     'SET topup = ?, balance = ?,active = ? ' +
-    'WHERE id = ?';
+    'WHERE top_up_id = ?';
 
 router.put('/:id', async (req, res) => {
     semaLog.info('PUT customer_credit - Enter');
@@ -75,7 +65,7 @@ router.put('/:id', async (req, res) => {
             semaLog.error('PUT customer, Validation error' + errors.toString());
             res.status(400).send(errors.toString());
         } else {
-            semaLog.info('TopUpId: ' + req.params.id);
+            semaLog.info('top_up_id: ' + req.params.id);
             findTopUp(sqlGetTopUpById, [req.params.id]).then(
                 function (result) {
 
@@ -83,6 +73,7 @@ router.put('/:id', async (req, res) => {
                     let customerParams = [
                         req.body.topup ? req.body.topup : result.topup,
                         req.body.balance ? req.body.balance : result.balance,
+                        receipt_id ? req.body.receipt_id : result.receipt_id,
                     ];
 
                     // Active is set via a 'bit;
@@ -186,7 +177,7 @@ const deleteTopUp = (query, params, res) => {
 router.post('/', async (req, res) => {
     semaLog.info('CREATE sema_customer - Enter');
     semaLog.info(req.body);
-    req.check('topUpId', 'Parameter topUpId is missing').exists();
+    req.check('top_up_id', 'Parameter top_up_id is missing').exists();
     req.check('customer_account_id', 'Parameter customer_account_id is missing').exists();
     req.check('topup', 'Parameter topup is missing').exists();
     req.check('balance', 'Parameter balance is missing').exists();
@@ -200,7 +191,7 @@ router.post('/', async (req, res) => {
             );
             res.status(400).send(errors.toString());
         } else {
-
+            console.log('req.body', req.body)
             customerCreditModel.create({ ...req.body, active: 1, created_at: req.body.created_at }).then(result => {
                 res.status(200).json(result);
             })
@@ -274,18 +265,18 @@ router.get('/allTopUps', function (req, res) {
             res.status(400).send(errors.toString());
         } else {
             if (req.query.hasOwnProperty('updated-date')) {
-                let updatedDate = getUTCDate(
+                let updated_at = getUTCDate(
                     new Date(req.query['updated-date'])
                 );
 
-                if (!isNaN(updatedDate)) {
+                if (!isNaN(updated_at)) {
                     getTopUps(
-                        sqlAllTopsUpdatedDate,
-                        [updatedDate],
+                        sqlAllTopsupdated_at,
+                        [updated_at],
                         res
                     );
                 } else {
-                    semaLog.error('GET Credits - Invalid updatedDate');
+                    semaLog.error('GET Credits - Invalid updated_at');
                     res.status(400).send('Invalid Date');
                 }
             } else if (

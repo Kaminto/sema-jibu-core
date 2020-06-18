@@ -36,7 +36,23 @@ module.exports = function(sequelize, DataTypes) {
         due_amount: {
 			type: DataTypes.DECIMAL,
 			allowNull: false,
-        },
+		},
+		receipt_id: {
+			type: DataTypes.STRING(255),
+			allowNull: true,
+			references: {
+				model: 'receipt',
+				key: 'id'
+			}
+		},
+		balance: {
+			type: DataTypes.DECIMAL,
+			allowNull: true,
+		},
+		notes: {
+			type: DataTypes.STRING(255),
+			allowNull: true,
+		},
 		created_at: {
 			type: DataTypes.DATE,
 			allowNull: false,

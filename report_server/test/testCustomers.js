@@ -33,7 +33,7 @@ describe('Testing Customers API', function () {
 						customer.should.have.property('name').eql('TestCustomer 1');
 						let oldPhone = customer.phoneNumber;
 						let oldAddress = customer.address;
-						let oldUpdatedDate = customer.updatedDate;
+						let oldupdated_at = customer.updated_at;
 						let url = sprintf('/sema/site/customers/%s', customer.customerId);
 						let now = new Date();
 						chai.request(server)
@@ -42,7 +42,7 @@ describe('Testing Customers API', function () {
 							.send({ 'phoneNumber': '999-999-9999', 'address': 'somwhere else' })
 							.set('Authorization', token)
 							.end(function(err, res) {
-								let updateDate = new Date( res.body.updatedDate);
+								let updateDate = new Date( res.body.updated_at);
 								expect(updateDate ).to.be.above( now );
 								findCustomerId.findCustomerId(server, token, 'TestCustomer 1', kiosk.id).then(function(customer) {
 									customer.should.have.property("phoneNumber").eql("999-999-9999");
@@ -51,7 +51,7 @@ describe('Testing Customers API', function () {
 									chai.request(server)
 										.put(url)
 										.set('Content-Type', 'application/json; charset=UTF-8')
-										.send({ 'phoneNumber': oldPhone, 'address': oldAddress, 'updatedDate':oldUpdatedDate })
+										.send({ 'phoneNumber': oldPhone, 'address': oldAddress, 'updated_at':oldupdated_at })
 										.set('Authorization', token)
 										.end(function(err, res) {
 											done(err);
@@ -309,7 +309,7 @@ describe('Testing Customers API', function () {
 							expect(res.body.customers.length).to.be.equal(2);
 							expect(res.body.customers[1].active).to.be.equal(true);
 							expect(res.body.customers[1].name).to.be.equal("TestCustomer 6");
-							expect(res.body.customers[1].createdDate).to.be.equal("2018-05-01T07:00:00.000Z");
+							expect(res.body.customers[1].created_at).to.be.equal("2018-05-01T07:00:00.000Z");
 							expect(res.body.customers[1].dueAmount).to.be.equal(0);
 							expect(res.body.customers[1].address).to.be.equal("test_address");
 							expect(res.body.customers[1].gpsCoordinates).to.be.equal("gps");
@@ -422,7 +422,7 @@ describe('Testing Customers API', function () {
 				findKioskId.findKioskId(server, token, 'UnitTestCustomers').then(function(kiosk) {
 					findCustomerId.findCustomerId(server, token, 'TestCustomer 1', kiosk.id).then(function(customer) {
 						customer.should.have.property('name').eql('TestCustomer 1');
-						let oldUpdatedDate = customer.updatedDate;
+						let oldupdated_at = customer.updated_at;
 						let url = sprintf('/sema/site/customers/%s', customer.customerId);
 						let now = new Date();
 
@@ -430,7 +430,7 @@ describe('Testing Customers API', function () {
 						chai.request(server)
 							.put(url)
 							.set('Content-Type', 'application/json; charset=UTF-8')
-							.send({ 'active': false, updatedDate:oldUpdatedDate })
+							.send({ 'active': false, updated_at:oldupdated_at })
 							.set('Authorization', token)
 							.end(function(err, res) {
 								res.should.have.status(200);
@@ -449,7 +449,7 @@ describe('Testing Customers API', function () {
 										chai.request(server)
 											.put(url)
 											.set('Content-Type', 'application/json; charset=UTF-8')
-											.send({ 'active': true, updatedDate:oldUpdatedDate })
+											.send({ 'active': true, updated_at:oldupdated_at })
 											.set('Authorization', token)
 											.end(function(err, res) {
 												res.should.have.status(200);

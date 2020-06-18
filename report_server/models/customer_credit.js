@@ -8,10 +8,14 @@ module.exports = function(sequelize, DataTypes) {
 			primaryKey: true,
 			autoIncrement: true
 		},
-		topUpId: {
+		top_up_id: {
 			type: DataTypes.STRING(255),
 			allowNull: false,
 			unique: true
+		},
+		notes: {
+			type: DataTypes.STRING(255),
+			allowNull: true,
 		},
 		customer_account_id: {
 			type: DataTypes.STRING,
@@ -27,13 +31,21 @@ module.exports = function(sequelize, DataTypes) {
         },
         balance: {
 			type: DataTypes.DECIMAL,
-			allowNull: false,
-		},
+			allowNull: true,
+		}, 
 		kiosk_id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
 			references: {
 				model: 'kiosk',
+				key: 'id'
+			}
+		},
+		receipt_id: {
+			type: DataTypes.STRING(255),
+			allowNull: true,
+			references: {
+				model: 'receipt',
 				key: 'id'
 			}
 		},

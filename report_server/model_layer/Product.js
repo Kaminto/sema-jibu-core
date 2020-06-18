@@ -12,8 +12,8 @@ class Product {
 		this._priceAmount = vals["price_amount"];
 		this._priceCurrency = vals["price_currency"];
 		this._sku = vals["sku"];
-		this._updatedDate = vals["updated_at"];
-		this._createdDate = vals["created_at"];
+		this._updated_at = vals["updated_at"];
+		this._created_at = vals["created_at"];
 		this._unitPerProduct = vals["unit_per_product"];
 		this._unitMeasure =vals["unit_measure"];
 		this._cogsAmount =vals["cogs_amount"];
@@ -32,8 +32,8 @@ class Product {
 			priceAmount: this._priceAmount,
 			priceCurrency: this._priceCurrency,
 			sku: this._sku,
-			updated_at: this._updatedDate,
-			created_at: this._createdDate,
+			updated_at: this._updated_at,
+			created_at: this._created_at,
 			unitPerProduct:this._unitPerProduct,
 			unitMeasure:this._unitMeasure,
 			cogsAmount:this._cogsAmount,
@@ -85,8 +85,8 @@ class Product {
 		return this._sku;
 	}
 
-	get updatedDate() {
-		return this._updatedDate;
+	get updated_at() {
+		return this._updated_at;
 	}
 
 	get productId() {

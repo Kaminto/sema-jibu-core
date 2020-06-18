@@ -1,12 +1,23 @@
-/* jshint indent: 1 */
 
-module.exports = function(sequelize, DataTypes) {
-	const customer_reminders= sequelize.define('customer_reminders', {
+module.exports = function (sequelize, DataTypes) {
+	const customer_reminders = sequelize.define('customer_reminders', {
 		id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
 			primaryKey: true,
 			autoIncrement: true
+		},
+		reminder_id: {
+			type: DataTypes.STRING(255),
+			allowNull: true
+		},
+		kiosk_id: {
+			type: DataTypes.BIGINT,
+			allowNull: false,
+			references: {
+				model: 'kiosk',
+				key: 'id'
+			}
 		},
 		customer_account_id: {
 			type: DataTypes.BIGINT,
@@ -16,13 +27,26 @@ module.exports = function(sequelize, DataTypes) {
 				key: 'id'
 			}
 		},
-        frequency: {
-			type: DataTypes.BOOLEAN,
+		frequency: {
+			type: DataTypes.BIGINT,
 			allowNull: false,
 		},
-		show_reminders: {
+		reminder_date: {
+			type: DataTypes.DATE,
+			allowNull: false
+		},
+		last_purchase_date: {
+			type: DataTypes.DATE,
+			allowNull: false
+		},
+		custom_reminder_date: {
+			type: DataTypes.DATE,
+			allowNull: true
+		},
+		active: {
 			type: DataTypes.BOOLEAN,
 			allowNull: false,
+			defaultValue: '1'
 		},
 		reminder_date: {
 			type: DataTypes.DATE,
@@ -35,7 +59,7 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		updated_at: {
 			type: DataTypes.DATE,
-			allowNull: false,
+			allowNull: true,
 			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
 		},
 	}, {

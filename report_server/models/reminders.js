@@ -6,7 +6,7 @@ module.exports = function (sequelize, DataTypes) {
 			primaryKey: true,
 			allowNull: false
 		},
-		reminderId: {
+		reminder_id: {
 			type: DataTypes.STRING(255),
 			allowNull: false
 		},

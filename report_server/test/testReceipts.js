@@ -48,7 +48,7 @@ describe('Testing Receipts API', function () {
 											.set('Content-Type', 'application/json; charset=UTF-8')
 											.send({
 												"id": "2018072700001",
-												"createdDate": "7/27/18",
+												"created_at": "7/27/18",
 												"currencyCode": "USD",
 												"customerId": customer.customerId,
 												"amountCash": 5,
@@ -105,7 +105,7 @@ describe('Testing Receipts API', function () {
 										.set('Content-Type', 'application/json; charset=UTF-8')
 										.send({
 											"id": "2018072700001",
-											"createdDate": "7/27/18",
+											"created_at": "7/27/18",
 											"currencyCode": "USD",
 											"customerId": customer.customerId,
 											"amountCash": 5,
@@ -170,7 +170,7 @@ describe('Testing Receipts API', function () {
 									"receiptId": "2",
 									"customerId": "Brian",
 									"siteId": kiosk.id,
-									"createdDate": "9/9/18",
+									"created_at": "9/9/18",
 									"totalSales": "10",
 									"cogs": "9",
 									"salesChannelId": "122"
@@ -201,7 +201,7 @@ describe('Testing Receipts API', function () {
 									"receiptId": "2",
 									"customerId": "Brian",
 									"siteId": kiosk.id,
-									"createdDate": "9/9/18",
+									"created_at": "9/9/18",
 									"totalSales": "10",
 									"cogs": "9",
 									"products": [

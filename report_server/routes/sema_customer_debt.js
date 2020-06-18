@@ -36,6 +36,8 @@ router.put('/:customer_debt_id', async (req, res) => {
                     }
                     customerDebtModal.update({
                         due_amount: req.body.due_amount ? req.body.due_amount : result.due_amount,
+                        balance: req.body.balance,
+                        receipt_id: req.body.receipt_id,
                         active
                     },
                         { where: { customer_debt_id: req.params.customer_debt_id } }
